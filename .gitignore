@@ -1,0 +1,47 @@
+# Node / pnpm
+node_modules/
+.pnp/
+.pnpm-debug.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Lockfile se sube para reproducibilidad
+# pnpm-lock.yaml → NO IGNORAR
+
+# Environment variables
+.env
+.env.local
+.env.*.local
+!.env.example
+!.env.test
+
+# SvelteKit / builds
+.svelte-kit/
+.build/
+dist/
+
+# Output / deployments
+.output
+.vercel
+.netlify
+.wrangler
+
+# OS / editor
+.DS_Store
+Thumbs.db
+.vscode/
+*.code-workspace
+
+# Vite
+vite.config.js.timestamp-*
+vite.config.ts.timestamp-*
+
+# Test / coverage
+coverage/
+*.lcov
+test-results/
+
+# Misc / temporales
+*.tmp
+*.bak
