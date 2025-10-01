@@ -1,38 +1,59 @@
-# sv
+# Escalada ECU 
 
-Everything you need to build a Svelte project, powered by [`sv`](https://github.com/sveltejs/cli).
+This project is built with:
+- [SvelteKit](https://kit.svelte.dev/)
+- [Node.js](https://nodejs.org/)
+- [Lucia](https://lucia-auth.com/)
+- [Drizzle ORM](https://orm.drizzle.team/)
+- [Prettier](https://prettier.io/)
+- [ESLint](https://eslint.org/)
 
-## Creating a project
+## Dependencies
+> ⚠️ This section will be updated once the project configuration is finalized.  
 
-If you're seeing this, you've probably already done this step. Congrats!
+---
 
-```sh
-# create a new project in the current directory
-npx sv create
+## Commit & Branching Rules
 
-# create a new project in my-app
-npx sv create my-app
-```
-
-## Developing
-
-Once you've created a project and installed dependencies with `npm install` (or `pnpm install` or `yarn`), start a development server:
-
-```sh
-npm run dev
-
-# or start the server and open the app in a new browser tab
-npm run dev -- --open
-```
-
-## Building
-
-To create a production version of your app:
+### 1. Create a branch locally with the task number
 
 ```sh
-npm run build
+git checkout -b {Ticket Number e.g. AE-1}
+
 ```
 
-You can preview the production build with `npm run preview`.
+### 2. Switch back to an existing branch
 
-> To deploy your app, you may need to install an [adapter](https://svelte.dev/docs/kit/adapters) for your target environment.
+```sh
+git checkout {Ticket Number}
+```
+### 3. Before making a Pull Request
+ Check code formatting with Prettier:
+
+```sh
+npm run format
+# or directly
+npx prettier --write .```
+```
+Check typing and linting with ESLint:
+```sh
+npm run lint
+# or directly
+npx eslint .
+```
+
+### 4. If everything is correct, make a commit
+Follow this convention:
+```sh
+git commit -m "{Ticket Number e.g. AE-1}: {short description starting with a verb in present tense}"
+```
+
+### 5. Push your branch
+
+```sh
+git push -u origin {Ticket Number e.g. AE-1}
+```
+Important
+❌ Do NOT merge into main until:
+You have explicit approval from someone in the development team.
+You have resolved any questions or requested changes in the Pull Request.
