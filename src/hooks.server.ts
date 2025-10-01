@@ -1,26 +1,45 @@
 import type { Handle } from '@sveltejs/kit';
-import * as auth from '$lib/server/auth';
+import { lucia } from '$lib/server/auth/lucia';
+import type { Session } from 'lucia';
 
-const handleAuth: Handle = async ({ event, resolve }) => {
-	const sessionToken = event.cookies.get(auth.sessionCookieName);
+type SessionMaybeFresh = Session & { fresh?: boolean };
 
-	if (!sessionToken) {
+export const handle: Handle = async ({ event, resolve }) => {
+	const sessionId = event.cookies.get('session') ?? null;
+
+	// limpia cookie si no hay sesión
+	if (!sessionId) {
 		event.locals.user = null;
 		event.locals.session = null;
+		const blank = lucia.createBlankSessionCookie();
+		event.cookies.set(blank.name, blank.value, { ...blank.attributes, path: '/' });
 		return resolve(event);
 	}
 
-	const { session, user } = await auth.validateSessionToken(sessionToken);
+	const { session, user } = await lucia
+		.validateSession(sessionId)
+		.catch(() => ({ session: null, user: null }));
 
-	if (session) {
-		auth.setSessionTokenCookie(event, sessionToken, session.expiresAt);
-	} else {
-		auth.deleteSessionTokenCookie(event);
+	const s = session as SessionMaybeFresh | null;
+
+	if (s?.fresh) {
+		const cookie = lucia.createSessionCookie(s.id);
+		event.cookies.set(cookie.name, cookie.value, { ...cookie.attributes, path: '/' });
+	} else if (!session) {
+		const blank = lucia.createBlankSessionCookie();
+		event.cookies.set(blank.name, blank.value, { ...blank.attributes, path: '/' });
 	}
 
-	event.locals.user = user;
-	event.locals.session = session;
+	// ⚠️ Mapeo explícito al shape que definiste en App.Locals
+	event.locals.user = user
+		? {
+				id: user.id,
+				email: user.email, // ya tipado por Lucia
+				role: user.role
+			}
+		: null;
+
+	event.locals.session = session ? { id: session.id } : null;
+
 	return resolve(event);
 };
-
-export const handle: Handle = handleAuth;
