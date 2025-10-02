@@ -1,15 +1,19 @@
-// See https://svelte.dev/docs/kit/types#app.d.ts
-// for information about these interfaces
+// src/app.d.ts
+/// <reference types="@sveltejs/kit" />
 declare global {
 	namespace App {
 		interface Locals {
-			user: import('$lib/server/auth').SessionValidationResult['user'];
-			session: import('$lib/server/auth').SessionValidationResult['session'];
+			user: { id: string; email: string; role: 'user' | 'admin' } | null;
+			session: { id: string } | null; // si en hooks guardas solo { id }; si guardas la sesión completa, cambia a: import('lucia').Session | null
 		}
-	} // interface Error {}
-	// interface Locals {}
-} // interface PageData {}
-// interface PageState {}
+	}
+}
 
-// interface Platform {}
+// Augmentación de Lucia: atributos extra que expones en getUserAttributes
+declare module 'lucia' {
+	interface Register {
+		DatabaseUserAttributes: { email: string; role: 'user' | 'admin' };
+	}
+}
+
 export {};
