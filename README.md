@@ -6,7 +6,7 @@
 [![ESLint](https://img.shields.io/badge/Code%20Style-ESLint-4B32C3.svg?logo=eslint)](https://eslint.org/)
 [![Prettier](https://img.shields.io/badge/Code%20Formatter-Prettier-ff69b4.svg?logo=prettier)](https://prettier.io/)
 
-> ✨ *
+> ✨ A Progressive Web App to centralize rock-climbing information in Ecuador—Areas → Sectors → Routes/Boulders—with collaborative moderation (draft/pending/published/rejected), text search, and unified grading systems.*
 
 ---
 
