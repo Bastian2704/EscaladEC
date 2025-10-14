@@ -12,7 +12,7 @@
 
 ## 🧭 Table of Contents
 
-- [Technologies](#-technologies)
+- [Technologies](https://github.com/Bastian2704/EscaladEC?tab=readme-ov-file#technologies)
 - [Recommended Development Environment](#-recommended-development-environment)
 - [Prerequisites](#-prerequisites)
 - [Clone the Repository](#-clone-the-repository)
