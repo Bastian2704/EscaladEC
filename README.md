@@ -15,7 +15,7 @@
 - [Technologies](https://github.com/Bastian2704/EscaladEC?tab=readme-ov-file#technologies)
 - [Recommended Development Environment](https://github.com/Bastian2704/EscaladEC?tab=readme-ov-file#0-recommended-development-environment)
 - [Prerequisites](https://github.com/Bastian2704/EscaladEC?tab=readme-ov-file#10-prerequisites)
-- [Clone the Repository]([#-clone-the-repositor](https://github.com/Bastian2704/EscaladEC?tab=readme-ov-file#2-clone-the-repository)
+- [Clone the Repository](https://github.com/Bastian2704/EscaladEC?tab=readme-ov-file#2-clone-the-repository)
 - [Install Dependencies](https://github.com/Bastian2704/EscaladEC?tab=readme-ov-file#3-install-dependencies)
 - [Environment Variables](https://github.com/Bastian2704/EscaladEC?tab=readme-ov-file#4-environment-variables)
 - [Database Setup](https://github.com/Bastian2704/EscaladEC?tab=readme-ov-file#5-run-postgresql-with-docker)
