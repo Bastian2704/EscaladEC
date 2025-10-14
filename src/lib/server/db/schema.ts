@@ -1,6 +1,6 @@
 import { pgTable, text, timestamp, uuid } from 'drizzle-orm/pg-core';
 
-// Usuarios
+// Users
 export const users = pgTable('users', {
 	id: uuid('id').primaryKey().defaultRandom(),
 	email: text('email').notNull().unique(),
@@ -12,7 +12,7 @@ export const users = pgTable('users', {
 	deletedAt: timestamp('deleted_at')
 });
 
-// Sesiones (formato que exige Lucia)
+// Sessions
 export const sessions = pgTable('sessions', {
 	id: text('id').primaryKey(),
 	userId: uuid('user_id')
@@ -21,7 +21,7 @@ export const sessions = pgTable('sessions', {
 	expiresAt: timestamp('expires_at', { withTimezone: true }).notNull()
 });
 
-/** Rutas de escalada (CRUD base) */
+// Climbing Routes
 export const climbRoute = pgTable('climb_route', {
 	id: uuid('id').primaryKey().defaultRandom(),
 	name: text('name').notNull(),

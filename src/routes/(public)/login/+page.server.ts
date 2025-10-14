@@ -17,7 +17,7 @@ export const actions: Actions = {
 		if (!email || !password) return fail(400, { message: 'Datos inválidos' });
 
 		const u = await db.query.users.findFirst({ where: eq(users.email, email) });
-		// Mensaje genérico para evitar enumeración de usuarios
+		
 		if (!u || !(await verify(u.passwordHash, password))) {
 			return fail(400, { message: 'Credenciales inválidas' });
 		}

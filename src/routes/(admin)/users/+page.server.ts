@@ -8,11 +8,10 @@ import { and, eq, isNull } from 'drizzle-orm';
 
 const PAGE_SIZE = 10;
 
-// ---- Tipado de roles y type-guard (sin any) ----+
+// ---- Roles and type-guard ----+
 
 const ROLE_VALUES = ['user', 'admin'] as const;
 type Role = (typeof ROLE_VALUES)[number];
-//const ALLOWED_ROLES: ReadonlySet<Role> = new Set(ROLE_VALUES);
 
 function isRole(value: string): value is Role {
   return (ROLE_VALUES as readonly string[]).includes(value);
@@ -24,8 +23,7 @@ export const load: PageServerLoad = async (event) => {
   const url = event.url;
   const page = Math.max(1, Number(url.searchParams.get('page') ?? 1));
   const role = url.searchParams.get('role') ?? '';
-  const status = url.searchParams.get('status') ?? 'active'; // active|suspended|deleted
-
+  const status = url.searchParams.get('status') ?? 'active'; 
   const filters = [];
   if (role && isRole(role)) {
     filters.push(eq(users.role, role));
@@ -45,7 +43,7 @@ export const load: PageServerLoad = async (event) => {
   return { user: admin, items, page, role: role || 'all', status };
 };
 
-// --- Helpers de seguridad ---
+// --- Security Helpers ---
 function ensureNotSelf(currentUserId: string | undefined, targetId: string) {
   if (currentUserId && currentUserId === targetId) {
     return fail(400, { message: 'No puedes modificarte a ti mismo' });

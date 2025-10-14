@@ -17,7 +17,7 @@ export const load: PageServerLoad = async (event) => {
 	const [item] = await db.select().from(climbRoute).where(eq(climbRoute.id, id));
 	if (!item) throw error(404);
 
-	// 🔒 Bloquea ver el form si no eres owner ni admin
+	//Can't edit if not owner or adming
 	assertOwnerOrAdmin(u, item);
 
 	return { item };
@@ -28,14 +28,14 @@ export const actions: Actions = {
 		const u = requireUser(event);
 		const { id } = event.params;
 
-		// 1) Leo el registro
+		// 1) Reeds
 		const [item] = await db.select().from(climbRoute).where(eq(climbRoute.id, id));
 		if (!item) throw error(404);
 
-		// 2) Verifico ownership/admin
+		// 2) Check ownership/admin
 		assertOwnerOrAdmin(u, item);
 
-		// 3) Actualizo
+		// 3) Update
 		const d = await event.request.formData();
 		const name = String(d.get('name') ?? '').trim();
 		const grade = String(d.get('grade') ?? '').trim();

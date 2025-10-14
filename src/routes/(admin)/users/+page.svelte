@@ -1,4 +1,6 @@
+
 <script lang="ts">
+	import '$lib/styles/users.css'
 	export let data: {
 		items: Array<{
 			id: string;
@@ -14,20 +16,19 @@
 		status: string;
 	};
 
-	// SvelteKit inyecta `form` con el resultado de la última acción (si hubo error con fail)
 	export let form: { message?: string } | undefined;
 </script>
 
-<h1 class="mb-4 text-xl">Usuarios</h1>
+<h1>Usuarios</h1>
 
 {#if form?.message}
-	<p class="mb-3 rounded border border-red-400 bg-red-50 p-2">{form.message}</p>
+	<p>{form.message}</p>
 {/if}
 
-<form method="GET" class="mb-4 flex items-center gap-2">
+<form method="GET">
 	<label
 		>Rol:
-		<select name="role" class="border p-1">
+		<select name="role">
 			<option value="all" selected={data.role === 'all'}>Todos</option>
 			<option value="user" selected={data.role === 'user'}>user</option>
 			<option value="admin" selected={data.role === 'admin'}>admin</option>
@@ -35,64 +36,74 @@
 	</label>
 	<label
 		>Estado:
-		<select name="status" class="border p-1">
+		<select name="status">
 			<option value="active" selected={data.status === 'active'}>active</option>
 			<option value="suspended" selected={data.status === 'suspended'}>suspended</option>
 			<option value="deleted" selected={data.status === 'deleted'}>deleted</option>
 		</select>
 	</label>
-	<button class="border px-2 py-1">Filtrar</button>
+	<button>Filtrar</button> <!--TODO: Button not filtering with Status and Role, only with role-->
 </form>
 
-<table class="w-full border-collapse">
+<table>
 	<thead>
 		<tr>
-			<th class="border p-2 text-left">Email</th>
-			<th class="border p-2">Rol</th>
-			<th class="border p-2">Estado</th>
-			<th class="border p-2">Acciones</th>
+			<th>Email</th>
+			<th>Rol</th>
+			<th>Estado</th>
+			<th>Acciones</th>
 		</tr>
 	</thead>
-	<tbody>
+	<tbody class="custom-table">
 		{#each data.items as u}
-			<tr>
-				<td class="border p-2">{u.email}</td>
-				<td class="border p-2">{u.role}</td>
-				<td class="border p-2">{u.status}</td>
-				<td class="border p-2">
-					<!-- Cambiar rol -->
-					<form method="POST" class="inline">
+			<tr class="custom-row">
+				<td class="custom-row">{u.email} </td>
+				<td class="custom-row">{u.role} </td>
+				<td class="custom-row">{u.status}</td>
+				<td class="custom-row-actions">
+					<!-- Rol change -->
+					<form method="POST">
 						<input type="hidden" name="id" value={u.id} />
-						<select name="role" class="border p-1">
+						<select name="role">
 							<option value="user" selected={u.role === 'user'}>user</option>
 							<option value="admin" selected={u.role === 'admin'}>admin</option>
 						</select>
-						<button formaction="?/setRole" class="ml-1 border px-2 py-1">Guardar</button>
+						<button formaction="?/setRole" class="custom-button">
+							<p class="button-text">Guardar</p>
+						</button>
 					</form>
 
-					<!-- Suspender / Reanudar -->
+					<!-- Suspend / Activate -->
 					{#if u.status === 'active'}
-						<form method="POST" class="ml-2 inline">
+						<form method="POST">
 							<input type="hidden" name="id" value={u.id} />
-							<button formaction="?/suspend" class="border px-2 py-1">Suspender</button>
+							<button formaction="?/suspend" class="custom-button">
+								<p class="button-text">Suspender</p>
+							</button>
 						</form>
 					{:else if u.status === 'suspended'}
-						<form method="POST" class="ml-2 inline">
+						<form method="POST">
 							<input type="hidden" name="id" value={u.id} />
-							<button formaction="?/resume" class="border px-2 py-1">Reactivar</button>
+							<button formaction="?/resume" class="custom-button">
+								<p class="button-text">Reactivar</p>
+							</button>
 						</form>
 					{/if}
 
-					<!-- Borrar (soft) / Restaurar -->
+					<!-- Delete (soft) / Restore -->
 					{#if u.status !== 'deleted'}
-						<form method="POST" class="ml-2 inline">
+						<form method="POST">
 							<input type="hidden" name="id" value={u.id} />
-							<button formaction="?/softDelete" class="border px-2 py-1">Borrar</button>
+							<button formaction="?/softDelete" class="custom-button">
+								<p class="button-text">Borrar</p>
+							</button>
 						</form>
 					{:else}
-						<form method="POST" class="ml-2 inline">
+						<form method="POST">
 							<input type="hidden" name="id" value={u.id} />
-							<button formaction="?/restore" class="border px-2 py-1">Restaurar</button>
+							<button formaction="?/restore">
+								<p class="button-text">Restaurar</p>
+							</button>
 						</form>
 					{/if}
 				</td>
