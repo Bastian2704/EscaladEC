@@ -13,16 +13,16 @@
 ## 🧭 Table of Contents
 
 - [Technologies](https://github.com/Bastian2704/EscaladEC?tab=readme-ov-file#technologies)
-- [Recommended Development Environment](https://github.com/Bastian2704/EscaladEC/edit/master/README.md#0-recommended-development-environment)
-- [Prerequisites](https://github.com/Bastian2704/EscaladEC/edit/master/README.md#10-prerequisites)
-- [Clone the Repository]([#-clone-the-repositor](https://github.com/Bastian2704/EscaladEC/edit/master/README.md#2-clone-the-repository)
-- [Install Dependencies](https://github.com/Bastian2704/EscaladEC/edit/master/README.md#3-install-dependencies)
-- [Environment Variables](https://github.com/Bastian2704/EscaladEC/edit/master/README.md#4-environment-variables)
-- [Database Setup](https://github.com/Bastian2704/EscaladEC/edit/master/README.md#5-run-postgresql-with-docker)
-- [Run Migrations](https://github.com/Bastian2704/EscaladEC/edit/master/README.md#6-database-migrations-with-drizzle)
-- [Start Development Server](https://github.com/Bastian2704/EscaladEC/edit/master/README.md#7-development-server)
-- [Commit & Branching Rules](https://github.com/Bastian2704/EscaladEC/edit/master/README.md#commit--branching-rules)
-- [Contributors](https://github.com/Bastian2704/EscaladEC/edit/master/README.md#contributors)
+- [Recommended Development Environment](https://github.com/Bastian2704/EscaladEC?tab=readme-ov-file#0-recommended-development-environment)
+- [Prerequisites](https://github.com/Bastian2704/EscaladEC?tab=readme-ov-file#10-prerequisites)
+- [Clone the Repository]([#-clone-the-repositor](https://github.com/Bastian2704/EscaladEC?tab=readme-ov-file#2-clone-the-repository)
+- [Install Dependencies](https://github.com/Bastian2704/EscaladEC?tab=readme-ov-file#3-install-dependencies)
+- [Environment Variables](https://github.com/Bastian2704/EscaladEC?tab=readme-ov-file#4-environment-variables)
+- [Database Setup](https://github.com/Bastian2704/EscaladEC?tab=readme-ov-file#5-run-postgresql-with-docker)
+- [Run Migrations](https://github.com/Bastian2704/EscaladEC?tab=readme-ov-file#6-database-migrations-with-drizzle)
+- [Start Development Server](https://github.com/Bastian2704/EscaladEC?tab=readme-ov-file#7-development-server)
+- [Commit & Branching Rules](https://github.com/Bastian2704/EscaladEC?tab=readme-ov-file#commit--branching-rules)
+- [Contributors](https://github.com/Bastian2704/EscaladEC?tab=readme-ov-file#contributors)
 
 ---
 
