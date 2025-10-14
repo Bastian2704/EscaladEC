@@ -13,17 +13,16 @@
 ## 🧭 Table of Contents
 
 - [Technologies](https://github.com/Bastian2704/EscaladEC?tab=readme-ov-file#technologies)
-- [Recommended Development Environment](#-recommended-development-environment)
-- [Prerequisites](#-prerequisites)
-- [Clone the Repository](#-clone-the-repository)
-- [Install Dependencies](#-install-dependencies)
-- [Environment Variables](#-environment-variables)
-- [Database Setup](#-database-setup)
-- [Run Migrations](#-run-migrations)
-- [Start Development Server](#-start-development-server)
-- [Useful Commands](#-useful-commands)
-- [Commit & Branching Rules](#-commit--branching-rules)
-- [Contributors](#-contributors)
+- [Recommended Development Environment](https://github.com/Bastian2704/EscaladEC/edit/master/README.md#0-recommended-development-environment)
+- [Prerequisites](https://github.com/Bastian2704/EscaladEC/edit/master/README.md#10-prerequisites)
+- [Clone the Repository]([#-clone-the-repositor](https://github.com/Bastian2704/EscaladEC/edit/master/README.md#2-clone-the-repository)
+- [Install Dependencies](https://github.com/Bastian2704/EscaladEC/edit/master/README.md#3-install-dependencies)
+- [Environment Variables](https://github.com/Bastian2704/EscaladEC/edit/master/README.md#4-environment-variables)
+- [Database Setup](https://github.com/Bastian2704/EscaladEC/edit/master/README.md#5-run-postgresql-with-docker)
+- [Run Migrations](https://github.com/Bastian2704/EscaladEC/edit/master/README.md#6-database-migrations-with-drizzle)
+- [Start Development Server](https://github.com/Bastian2704/EscaladEC/edit/master/README.md#7-development-server)
+- [Commit & Branching Rules](https://github.com/Bastian2704/EscaladEC/edit/master/README.md#commit--branching-rules)
+- [Contributors](https://github.com/Bastian2704/EscaladEC/edit/master/README.md#contributors)
 
 ---
 
@@ -185,6 +184,6 @@ You have explicit approval from someone in the development team.
 You have resolved any questions or requested changes in the Pull Request.
 
 ---
-Contributors
+### Contributors
 
 <a href="https://github.com/Bastian2704/EscaladEC/graphs/contributors"> <img src="https://contrib.rocks/image?repo=Bastian2704/EscaladEC" /> </a>
