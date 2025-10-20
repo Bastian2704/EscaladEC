@@ -6,7 +6,10 @@ export const users = pgTable('users', {
 	email: text('email').notNull().unique(),
 	passwordHash: text('password_hash').notNull(),
 	role: text('role').notNull().default('user'),
-	createdAt: timestamp('created_at').notNull().defaultNow()
+	status: text('status').notNull().default('active'), // 'active' | 'suspended' | 'deleted'
+	createdAt: timestamp('created_at').notNull().defaultNow(),
+	updatedAt: timestamp('updated_at'),
+	deletedAt: timestamp('deleted_at')
 });
 
 // Sesiones (formato que exige Lucia)

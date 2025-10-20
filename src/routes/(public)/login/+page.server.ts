@@ -21,6 +21,9 @@ export const actions: Actions = {
 		if (!u || !(await verify(u.passwordHash, password))) {
 			return fail(400, { message: 'Credenciales inválidas' });
 		}
+		if (u.status !== 'active') {
+			return fail(403, { message: 'Tu cuenta está desactivada o suspendida' });
+		}
 
 		const session = await lucia.createSession(u.id, {});
 		const cookie = lucia.createSessionCookie(session.id);
