@@ -5,7 +5,7 @@ export function requireUser(event: RequestEvent) {
 	return event.locals.user;
 }
 export function requireAdmin(event: RequestEvent) {
-	const u = requireUser(event);
-	if (u.role !== 'admin') throw error(403, 'Forbidden');
-	return u;
+	const user = requireUser(event);
+	if (user.role !== 'admin') throw error(403, 'Forbidden');
+	return user;
 }
