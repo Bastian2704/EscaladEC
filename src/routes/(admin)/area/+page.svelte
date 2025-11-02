@@ -4,6 +4,7 @@
 	export let data: {
 		items: Array<{
 			id: string;
+			name: string;
 			province: string;
 			city: string;
 			description: string;
@@ -37,6 +38,7 @@
 <table class="w-full border-collapse">
 	<thead>
 		<tr>
+			<th class="border p-2 text-left">Nombre</th>
 			<th class="border p-2 text-left">Provincia</th>
 			<th class="border p-2">Ciudad</th>
 			<th class="border p-2">Descripción</th>
@@ -49,6 +51,7 @@
 	<tbody>
 		{#each data.items as area}
 			<tr>
+				<td class="border p-2">{area.name}</td>
 				<td class="border p-2">{area.province}</td>
 				<td class="border p-2">{area.city}</td>
 				<td class="border p-2">{area.description}</td>
@@ -94,9 +97,15 @@
 		{/each}
 	</tbody>
 </table>
-<!-- Formulario para crear una nueva área -->
+
 <form method="POST" enctype="multipart/form-data">
 	<h2>Crear nueva área</h2>
+	<br />
+
+	<label for="name">Nombre:</label>
+	<input type="text" name="name" id="name" required />
+
+	<br />
 
 	<label for="province">Provincia:</label>
 	<select name="province" id="province" required>
