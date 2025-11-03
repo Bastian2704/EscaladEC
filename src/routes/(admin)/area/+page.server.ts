@@ -49,14 +49,17 @@ export const actions: Actions = {
 
 		//TODO: Change this to validate select options
 		const province = String(data.get('province') ?? '').trim();
+		const name = String(data.get('name') ?? '').trim();
 		const city = String(data.get('city') ?? '');
 		const description = String(data.get('description') ?? '');
 		const latitude = String(data.get('latitude') ?? '');
 		const longitude = String(data.get('longitude') ?? '');
 		//const status = String(data.get('status') ?? Status.active);
 
-		if (!province || !city || !description) {
-			return fail(400, { message: 'Ciudad, Provincia y Descripción son Obligatorias' });
+		if (!name || !province || !city || !description) {
+			return fail(400, {
+				message: 'Nombre del Area, Ciudad, Provincia y Descripción son Obligatorias'
+			});
 		}
 
 		if (!isProvince(province)) {
@@ -64,6 +67,7 @@ export const actions: Actions = {
 		}
 
 		await db.insert(area).values({
+			name,
 			province,
 			city,
 			description,
@@ -71,10 +75,11 @@ export const actions: Actions = {
 			longitude,
 			status: 'active',
 			createdAt: new Date(),
-			createdBy: 'user'
+			createdBy: 'user',
+			updatedBy: 'user'
 		} as any);
 
-		return { success: true, message: `Area: ${province}, creado correctamente.` };
+		return { success: true, message: `Area: ${name}, creado correctamente.` };
 	},
 
 	suspend: async (event) => {

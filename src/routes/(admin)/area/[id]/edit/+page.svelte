@@ -4,6 +4,7 @@
 	export let data: {
 		item: {
 			id: string;
+			name: string;
 			province: string;
 			city: string;
 			description: string;
@@ -11,12 +12,27 @@
 			longitude: number;
 			status: Status;
 		};
+		sectors: {
+			id: string;
+			name: string;
+			orientation: string;
+			description: string;
+			status: Status;
+			createdBy: string;
+			createdAt: string;
+		}[];
 	};
 </script>
 
-<h1 class="mb-4 text-xl">Editar área</h1>
+<h1 class="">Sectores de {data.item.name}</h1>
+
+<h1 class="">Editar área</h1>
 
 <form method="POST" class="space-y-3">
+	<label>
+		Nombre del Área:
+		<input type="text" name="name" value={data.item.name} required />
+	</label>
 	<label>
 		Provincia:
 		<select name="province" required>
@@ -57,8 +73,54 @@
 		</select>
 	</label>
 
-	<div class="mt-4 flex gap-2">
+	<div class="">
 		<button formaction="?/save" class="border bg-green-100 px-3 py-1">Guardar</button>
 		<button formaction="?/delete" class="border bg-red-100 px-3 py-1">Eliminar</button>
 	</div>
+</form>
+
+<table class="">
+	<thead>
+		<tr>
+			<th class="border p-2 text-left">Nombre</th>
+			<th class="border p-2">Orientación</th>
+			<th class="border p-2">Descripción</th>
+
+			<th class="border p-2">Acciones</th>
+		</tr>
+	</thead>
+	<tbody>
+		{#each data.sectors as sector}
+			<tr>
+				<td class="border p-2">{sector.name}</td>
+				<td class="border p-2">{sector.orientation}</td>
+				<td class="border p-2">{sector.description}</td>
+				<td class="border p-2">
+					<a href={`/area/${data.item.id}/sector/${sector.id}/edit`}> Editar </a>
+				</td>
+			</tr>
+		{/each}
+	</tbody>
+</table>
+
+<form method="POST" enctype="multipart/form-data">
+	<h2>Crear nuevo sector</h2>
+	<br />
+
+	<label for="name">Nombre:</label>
+	<input type="text" name="name" id="name" required />
+
+	<br />
+
+	<label for="orientation">Orientación:</label>
+	<input type="text" name="orientation" id="orientation" required />
+
+	<br />
+
+	<label for="description">Descripción:</label>
+	<input type="text" name="description" id="description" required />
+
+	<br />
+
+	<button type="submit" formaction="?/createSector">Crear Sector</button>
 </form>

@@ -36,6 +36,7 @@ export const climbRoute = pgTable('climb_route', {
  *  ======================= */
 export const area = pgTable('area', {
 	id: uuid('id').primaryKey().defaultRandom(),
+	name: text('name').notNull(),
 	province: text('province').notNull(),
 	city: text('city').notNull(),
 	description: text('description').notNull(),
@@ -43,7 +44,10 @@ export const area = pgTable('area', {
 	longitude: real('longitude').notNull(),
 	status: text('status').notNull().default('active'),
 	createdBy: text('created_by').notNull(),
-	createdAt: timestamp('created_at').notNull().defaultNow()
+	updatedBy: text('updated_by').notNull(),
+	createdAt: timestamp('created_at').notNull().defaultNow(),
+	updatedAt: timestamp('updated_at').notNull().defaultNow(),
+	deletedAt: timestamp('deleted_at').notNull().defaultNow()
 });
 
 /** =======================
@@ -54,11 +58,15 @@ export const sector = pgTable('sector', {
 	areaId: uuid('area_id')
 		.notNull()
 		.references(() => area.id),
+	name: text('name').notNull(),
 	orientation: text('orientation').notNull(),
 	description: text('description').notNull(),
 	status: text('status').notNull().default('active'),
 	createdBy: text('created_by').notNull(),
-	createdAt: timestamp('created_at').notNull().defaultNow()
+	updatedBy: text('updated_by').notNull(),
+	createdAt: timestamp('created_at').notNull().defaultNow(),
+	updatedAt: timestamp('updated_at').notNull().defaultNow(),
+	deletedAt: timestamp('deleted_at').notNull().defaultNow()
 });
 
 /** =======================
