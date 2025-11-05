@@ -22,8 +22,7 @@ export const load: PageServerLoad = async (event) => {
 	const url = event.url;
 	const page = Math.max(1, Number(url.searchParams.get('page') ?? 1));
 	const role = url.searchParams.get('role') ?? '';
-	const status = url.searchParams.get('status') ?? 'active'; // active|suspended|deleted
-
+	const status = url.searchParams.get('status') ?? 'active';
 	const filters = [];
 	if (role && isRole(role)) {
 		filters.push(eq(users.role, role));

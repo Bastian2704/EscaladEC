@@ -34,7 +34,7 @@ export const handle: Handle = async ({ event, resolve }) => {
 	event.locals.user = user
 		? {
 				id: user.id,
-				email: user.email, // ya tipado por Lucia
+				email: user.email,
 				role: user.role
 			}
 		: null;

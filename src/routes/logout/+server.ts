@@ -1,4 +1,3 @@
-// src/routes/logout/+server.ts
 import type { RequestHandler } from './$types';
 import { lucia } from '$lib/server/auth/lucia';
 import { redirect } from '@sveltejs/kit';

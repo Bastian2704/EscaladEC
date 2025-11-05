@@ -4,7 +4,6 @@
 	export let data: {
 		item: {
 			id: string;
-			areaId: string;
 			name: string;
 			orientation: string;
 			description: string;

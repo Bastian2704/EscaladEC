@@ -4,7 +4,7 @@ declare global {
 	namespace App {
 		interface Locals {
 			user: { id: string; email: string; role: 'user' | 'admin' } | null;
-			session: { id: string } | null; // si en hooks guardas solo { id }; si guardas la sesión completa, cambia a: import('lucia').Session | null
+			session: { id: string } | null;
 		}
 	}
 }
