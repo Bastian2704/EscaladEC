@@ -47,3 +47,5 @@
 		<button formaction="?/delete" class="border bg-red-100 px-3 py-1">Eliminar</button>
 	</div>
 </form>
+<h1 class="">Climbs de {data.item.name}</h1>
+<a href={`/area/${data.item.areaId}/sector/${data.item.id}/climbs/`}> Visualizar </a>

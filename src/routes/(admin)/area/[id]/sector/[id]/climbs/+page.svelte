@@ -2,10 +2,10 @@
 	import { type Status } from '$lib/contants/constants';
 
 	export let data: {
-		item: {
+		items: Array<{
 			id: string;
-			areaId: string;
-			userId: string;
+            areaId: string;
+			sectorId: string;
 			name: string;
 			category: string;
 			climbType: string;
@@ -13,43 +13,106 @@
 			status: Status;
 			createdAt: string;
 			updatedAt?: string | null;
-		};
+			deletedAt?: string | null;
+		}>;
+		page: number;
+		role: string;
+		status: string;
 	};
+
+	export let form: { message?: string; success?: boolean } | undefined;
 </script>
 
-<h1 class="mb-4 text-xl">Climb {data.item.name}</h1>
+<h1 class="mb-4 text-xl">Climbs</h1>
 
-<form method="POST" class="space-y-3">
-	<label>
-		Nombre:
-		<input type="text" name="name" value={data.item.name} required />
-	</label>
+{#if form?.message}
+	<p
+		class="mb-3 rounded border p-2 {form.success
+			? 'border-green-400 bg-green-50'
+			: 'border-red-400 bg-red-50'}"
+	>
+		{form.message}
+	</p>
+{/if}
 
-	<label>
-		Categoria:
-		<input type="text" name="category" value={data.item.category} required />
-	</label>
-	<label>
-		Tipo de escalada:
-		<input type="text" name="climbType" value={data.item.climbType} required />
-	</label>
+<table class="w-full border-collapse">
+	<thead>
+		<tr>
+			<th class="border p-2 text-left">Nombre</th>
+			<th class="border p-2 text-left">Categoría</th>
+			<th class="border p-2">Tipo de Escalada</th>
+			<th class="border p-2">Equipo Requerido</th>
 
-	<label>
-		Equipo requerido:
-		<textarea name="requiredEquipment" rows="3">{data.item.requiredEquipment}</textarea>
-	</label>
+			<th class="border p-2">Acciones</th>
+		</tr>
+	</thead>
+	<tbody>
+		{#each data.items as climb}
+			<tr>
+				<td class="border p-2">{climb.name}</td>
+				<td class="border p-2">{climb.category}</td>
+				<td class="border p-2">{climb.climbType}</td>
+				<td class="border p-2">{climb.requiredEquipment}</td>
+				<td class="border p-2">
+					<a href={`/area/${climb.areaId}/sector/${climb.sectorId}/climb/${climb.id}/edit`}>
+						Editar
+					</a>
+					<form method="POST" class="inline">
+						<input type="hidden" name="id" value={climb.id} />
+					</form>
 
-	<label>
-		Estado:
-		<select name="status">
-			<option value="active" selected={data.item.status === 'active'}>Activa</option>
-			<option value="suspended" selected={data.item.status === 'suspended'}>Suspendida</option>
-			<option value="deleted" selected={data.item.status === 'deleted'}>Eliminada</option>
-		</select>
-	</label>
+					{#if climb.status === 'active'}
+						<form method="POST" class="ml-2 inline">
+							<input type="hidden" name="id" value={climb.id} />
+							<button formaction="?/suspend" class="border px-2 py-1">Suspender</button>
+						</form>
+					{:else if climb.status === 'suspended'}
+						<form method="POST" class="ml-2 inline">
+							<input type="hidden" name="id" value={climb.id} />
+							<button formaction="?/resume" class="border px-2 py-1">Reactivar</button>
+						</form>
+					{/if}
 
-	<div class="mt-4 flex gap-2">
-		<button formaction="?/save" class="border bg-green-100 px-3 py-1">Guardar</button>
-		<button formaction="?/delete" class="border bg-red-100 px-3 py-1">Eliminar</button>
-	</div>
+					{#if climb.status !== 'deleted'}
+						<form method="POST" class="ml-2 inline">
+							<input type="hidden" name="id" value={climb.id} />
+							<button formaction="?/softDelete" class="border px-2 py-1">Borrar</button>
+						</form>
+					{:else}
+						<form method="POST" class="ml-2 inline">
+							<input type="hidden" name="id" value={climb.id} />
+							<button formaction="?/restore" class="border px-2 py-1">Restaurar</button>
+						</form>
+					{/if}
+				</td>
+			</tr>
+		{/each}
+	</tbody>
+</table>
+
+<form method="POST" enctype="multipart/form-data">
+	<h2>Crear nuevo Climb</h2>
+	<br />
+
+	<label for="name">Nombre:</label>
+	<input type="text" name="name" id="name" required />
+
+	<br />
+
+	<label for="category">Categoría:</label>
+	<input type="text" name="category" id="category" required />
+
+	<br />
+
+	<label for="climbType">Tipo de Escalada:</label>
+	<input type="text" name="climbType" id="climbType" required />
+
+	<br />
+
+	<label for="requiredEquipment">Equipo Requerido:</label>
+	<input type="text" name="requiredEquipment" id="requiredEquipment" required />
+
+	<br />
+
+	<button type="submit" formaction="?/createClimb">Crear Climb</button>
 </form>

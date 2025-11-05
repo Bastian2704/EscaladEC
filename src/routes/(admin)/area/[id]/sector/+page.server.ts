@@ -2,7 +2,6 @@ import { db } from '$lib/server/db';
 import { sector } from '$lib/server/db/schema';
 import { requireUser } from '$lib/server/auth/guards';
 import { requireAdmin } from '$lib/server/auth/guards';
-import { lucia } from '$lib/server/auth/lucia';
 import { fail, redirect } from '@sveltejs/kit';
 import { eq } from 'drizzle-orm';
 import type { Actions, PageServerLoad } from './$types';
@@ -70,7 +69,6 @@ export const actions: Actions = {
 		if (!id) return fail(400, { message: 'Sin id' });
 
 		await db.update(sector).set({ status: 'suspended' }).where(eq(sector.id, id));
-		await lucia.invalidateUserSessions(id);
 
 		throw redirect(303, event.url.pathname);
 	},
@@ -94,7 +92,6 @@ export const actions: Actions = {
 
 		await db.update(sector).set({ status: 'deleted' }).where(eq(sector.id, id));
 
-		await lucia.invalidateUserSessions(id);
 		throw redirect(303, event.url.pathname);
 	},
 
