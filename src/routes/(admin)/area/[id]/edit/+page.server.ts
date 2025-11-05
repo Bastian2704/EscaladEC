@@ -71,33 +71,5 @@ export const actions: Actions = {
 
 		await db.delete(area).where(eq(area.id, id));
 		throw redirect(303, '/area');
-	},
-	createSector: async (event) => {
-		const { id } = event.params as { id: string };
-
-		const data = await event.request.formData();
-		const areaId = id;
-		const name = String(data.get('name') ?? '').trim();
-		const orientation = String(data.get('orientation') ?? '').trim();
-		const description = String(data.get('description') ?? '');
-
-		if (!name || !orientation || !description) {
-			return fail(400, {
-				message: 'Nombre del Sector, Orientación y Descripción son Obligatorias'
-			});
-		}
-
-		await db.insert(sector).values({
-			areaId,
-			name,
-			orientation,
-			description,
-			status: 'active',
-			createdAt: new Date(),
-			createdBy: 'user',
-			updatedBy: 'user'
-		} as any);
-
-		return { success: true, message: `Area: ${name}, creado correctamente.` };
 	}
 };

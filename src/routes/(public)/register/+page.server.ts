@@ -13,13 +13,18 @@ export const actions: Actions = {
 			.toLowerCase()
 			.trim();
 		const password = String(data.get('password') ?? '');
-		if (!email || password.length < 8) return fail(400, { message: 'Datos inválidos' });
+		const username = String(data.get('username') ?? '');
+		const age = String(data.get('age') ?? '');
+		if (!email || password.length < 8 || !username || !age)
+			return fail(400, { message: 'Datos inválidos' });
 
-		const exists = await db.query.users.findFirst({ where: eq(users.email, email) });
+		const exists = await db.query.users.findFirst({
+			where: eq(users.email, email || users.username, username)
+		});
 		if (exists) return fail(400, { message: 'Email ya registrado' });
 
 		const passwordHash = await hash(password);
-		const [u] = await db.insert(users).values({ email, passwordHash }).returning();
+		const [u] = await db.insert(users).values({ email, username, age, passwordHash }).returning();
 		const session = await lucia.createSession(u.id, {});
 		const cookie = lucia.createSessionCookie(session.id);
 		cookies.set(cookie.name, cookie.value, { ...cookie.attributes, path: '/' });

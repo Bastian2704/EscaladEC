@@ -8,7 +8,7 @@ export const POST: RequestHandler = async ({ locals, cookies }) => {
 			await lucia.invalidateSession(locals.session.id);
 		}
 	} finally {
-		// siempre limpia la cookie del navegador
+		// cookie cleaning
 		const blank = lucia.createBlankSessionCookie();
 		cookies.set(blank.name, blank.value, { ...blank.attributes, path: '/' });
 	}
