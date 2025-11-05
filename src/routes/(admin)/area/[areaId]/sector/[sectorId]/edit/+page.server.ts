@@ -12,29 +12,30 @@ function assertOwnerOrAdmin(user: { id: string; role: string }, item: { createdB
 
 export const load: PageServerLoad = async (event) => {
 	const user = requireUser(event);
-	const { id } = event.params as { id: string };
+	const { sectorId } = event.params;
 
-	const [item] = await db.select().from(sector).where(eq(sector.id, id));
+	const [item] = await db.select().from(sector).where(eq(sector.id, sectorId));
 	if (!item) throw error(404);
 
 	assertOwnerOrAdmin(user, item);
 
-	return { item };
+	return { item, sectorId };
 };
 
 export const actions: Actions = {
 	save: async (event) => {
-		const u = requireUser(event);
-		const { id } = event.params as { id: string };
+		const user = requireUser(event);
 
-		const [item] = await db.select().from(sector).where(eq(sector.id, id));
+		const { sectorId } = event.params;
+
+		const [item] = await db.select().from(sector).where(eq(sector.id, sectorId));
 		if (!item) throw error(404);
 
-		assertOwnerOrAdmin(u, item);
+		assertOwnerOrAdmin(user, item);
 
 		const data = await event.request.formData();
-		const name = String(data.get('province') ?? '').trim();
-		const orientation = String(data.get('city') ?? '').trim();
+		const name = String(data.get('name') ?? '').trim();
+		const orientation = String(data.get('orientation') ?? '').trim();
 		const description = String(data.get('description') ?? '').trim();
 		const status = String(data.get('status') ?? '');
 
@@ -43,21 +44,22 @@ export const actions: Actions = {
 		await db
 			.update(sector)
 			.set({ name, orientation, description, status })
-			.where(eq(sector.id, id));
-		throw redirect(303, '/area/');
+			.where(eq(sector.id, sectorId));
+
+		const referer = event.request.headers.get('referer');
+		throw redirect(303, referer ?? `/area/${event.params.areaId}/sector`);
 	},
 
-	delete: async (event) => {
+	softDelete: async (event) => {
 		const u = requireUser(event);
-		const { id } = event.params as { id: string };
+		const { sectorId } = event.params;
 
-		const [item] = await db.select().from(sector).where(eq(sector.id, id));
+		const [item] = await db.select().from(sector).where(eq(sector.id, sectorId));
 		if (!item) throw error(404);
-		const redirectDir = '/area/' + sector.areaId; //+'/sector/'+sector.id
 
 		assertOwnerOrAdmin(u, item);
 
-		await db.delete(sector).where(eq(sector.id, id));
-		throw redirect(303, redirectDir);
+		await db.update(sector).set({ status: 'deleted' }).where(eq(sector.id, sectorId));
+		throw redirect(303, event.url.pathname);
 	}
 };

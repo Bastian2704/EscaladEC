@@ -11,7 +11,7 @@ const PAGE_SIZE = 10;
 export const load: PageServerLoad = async (event) => {
 	requireUser(event);
 
-	const { id } = event.params;
+	const { areaId } = event.params;
 	const url = event.url;
 	const page = Math.max(1, Number(url.searchParams.get('page') ?? 1));
 	const status = url.searchParams.get('status') ?? 'active';
@@ -20,7 +20,7 @@ export const load: PageServerLoad = async (event) => {
 	const items = await db
 		.select()
 		.from(sector)
-		.where(eq(sector.areaId, id))
+		.where(eq(sector.areaId, areaId))
 		.limit(PAGE_SIZE)
 		.offset(offset);
 
@@ -34,10 +34,9 @@ export const load: PageServerLoad = async (event) => {
 export const actions: Actions = {
 	createSector: async (event) => {
 		requireAdmin(event);
-		const { id } = event.params as { id: string };
+		const { areaId } = event.params;
 
 		const data = await event.request.formData();
-		const areaId = id;
 		const name = String(data.get('name') ?? '').trim();
 		const orientation = String(data.get('orientation') ?? '').trim();
 		const description = String(data.get('description') ?? '');

@@ -87,6 +87,8 @@
 <form method="POST" class="mb-6 flex flex-wrap items-center gap-2 rounded border bg-gray-50 p-3">
 	<h2 class="mb-1 w-full font-semibold">Crear nuevo usuario</h2>
 	<input type="email" name="email" placeholder="Email" class="border p-1" required />
+	<input type="username" name="username" placeholder="Username" class="border p-1" required />
+	<input type="age" name="age" placeholder="Age" class="border p-1" required />
 	<input
 		type="password"
 		name="password"

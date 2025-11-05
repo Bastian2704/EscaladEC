@@ -62,13 +62,15 @@ async function assertNotLastAdmin(targetUserId: string) {
 
 export const actions: Actions = {
 	createUser: async (event) => {
-		const admin = requireAdmin(event);
+		requireAdmin(event);
 
 		const data = await event.request.formData();
 		const email = String(data.get('email') ?? '')
 			.toLowerCase()
 			.trim();
 		const password = String(data.get('password') ?? '');
+		const username = String(data.get('username') ?? '');
+		const age = String(data.get('age') ?? '');
 		const role = String(data.get('role') ?? 'user').toLowerCase();
 
 		if (!email || password.length < 8) {
@@ -87,6 +89,8 @@ export const actions: Actions = {
 		const passwordHash = await hash(password);
 		await db.insert(users).values({
 			email,
+			username,
+			age,
 			passwordHash,
 			role,
 			status: 'active',

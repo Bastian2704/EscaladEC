@@ -2,41 +2,53 @@ import { db } from '$lib/server/db';
 import { climb } from '$lib/server/db/schema';
 import { requireUser } from '$lib/server/auth/guards';
 import { requireAdmin } from '$lib/server/auth/guards';
+import { climbType } from '$lib/contants/constants';
 import { fail, redirect } from '@sveltejs/kit';
 import { eq } from 'drizzle-orm';
 import type { Actions, PageServerLoad } from './$types';
 
 const PAGE_SIZE = 10;
 
+//TODO Select logic
+const climbtype = climbType;
+type climbType = (typeof climbtype)[number];
+
+function isClimbType(value: string): value is climbType {
+	return climbtype.includes(value);
+}
+
 export const load: PageServerLoad = async (event) => {
 	requireUser(event);
 
-	const { id } = event.params;
+	const { areaId, sectorId } = event.params;
+
 	const url = event.url;
 	const page = Math.max(1, Number(url.searchParams.get('page') ?? 1));
+	const climbType = url.searchParams.get('climbType') ?? '';
 	const status = url.searchParams.get('status') ?? 'active';
 	const offset = (page - 1) * PAGE_SIZE;
 
 	const items = await db
 		.select()
 		.from(climb)
-		.where(eq(climb.sectorId, id))
+		.where(eq(climb.sectorId, sectorId))
 		.limit(PAGE_SIZE)
 		.offset(offset);
 
 	return {
 		items,
 		page,
-		status
+		status,
+		sectorId,
+		areaId
 	};
 };
 export const actions: Actions = {
 	createClimb: async (event) => {
 		requireAdmin(event);
-		const { id } = event.params as { id: string };
-        const user = event.locals.user;
+		const { sectorId } = event.params;
+		const user = event.locals.user;
 		const data = await event.request.formData();
-		const sectorId = id;
 		const name = String(data.get('name') ?? '').trim();
 		//TODO select
 		const category = String(data.get('category') ?? '').trim();
@@ -52,7 +64,7 @@ export const actions: Actions = {
 
 		await db.insert(climb).values({
 			sectorId,
-            userId: user.id,
+			userId: user.id,
 			name,
 			category,
 			climbType,

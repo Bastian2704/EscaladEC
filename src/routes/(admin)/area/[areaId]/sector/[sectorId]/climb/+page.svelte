@@ -4,7 +4,7 @@
 	export let data: {
 		items: Array<{
 			id: string;
-            areaId: string;
+			areaId: string;
 			sectorId: string;
 			name: string;
 			category: string;
@@ -54,9 +54,7 @@
 				<td class="border p-2">{climb.climbType}</td>
 				<td class="border p-2">{climb.requiredEquipment}</td>
 				<td class="border p-2">
-					<a href={`/area/${climb.areaId}/sector/${climb.sectorId}/climb/${climb.id}/edit`}>
-						Editar
-					</a>
+					<a href={`climb/${climb.id}/edit`}> Editar </a>
 					<form method="POST" class="inline">
 						<input type="hidden" name="id" value={climb.id} />
 					</form>

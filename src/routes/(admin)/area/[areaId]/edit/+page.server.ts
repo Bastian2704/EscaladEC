@@ -1,10 +1,9 @@
 import { db } from '$lib/server/db';
-import { area, sector } from '$lib/server/db/schema';
+import { area } from '$lib/server/db/schema';
 import { requireUser } from '$lib/server/auth/guards';
 import { error, fail, redirect } from '@sveltejs/kit';
 import { eq } from 'drizzle-orm';
-import type { Actions, PageServerLoad } from '../../$types';
-const PAGE_SIZE = 10;
+import type { Actions, PageServerLoad } from './$types';
 
 function assertOwnerOrAdmin(user: { id: string; role: string }, item: { createdBy: string }) {
 	if (user.role === 'admin') return;
@@ -13,31 +12,24 @@ function assertOwnerOrAdmin(user: { id: string; role: string }, item: { createdB
 
 export const load: PageServerLoad = async (event) => {
 	const user = requireUser(event);
-	const { id } = event.params as { id: string };
+	const { areaId } = event.params;
+	if (!areaId) throw error(400, 'Falta areaId');
 
-	const [item] = await db.select().from(area).where(eq(area.id, id));
-	if (!item) throw error(404);
-
-	const url = event.url;
-	const page = Math.max(1, Number(url.searchParams.get('page') ?? 1));
-	const offset = (page - 1) * PAGE_SIZE;
-
-	const sectors = await db.select().from(sector).limit(PAGE_SIZE).offset(offset);
-
-	console.log(sector.id);
+	const [item] = await db.select().from(area).where(eq(area.id, areaId));
 	if (!item) throw error(404);
 
 	assertOwnerOrAdmin(user, item);
 
-	return { item, sectors };
+	return { item, areaId };
 };
 
 export const actions: Actions = {
 	save: async (event) => {
 		const u = requireUser(event);
-		const { id } = event.params as { id: string };
+		const { areaId } = event.params;
+		if (!areaId) throw error(400, 'Falta areaId');
 
-		const [item] = await db.select().from(area).where(eq(area.id, id));
+		const [item] = await db.select().from(area).where(eq(area.id, areaId));
 		if (!item) throw error(404);
 
 		assertOwnerOrAdmin(u, item);
@@ -56,20 +48,21 @@ export const actions: Actions = {
 		await db
 			.update(area)
 			.set({ name, province, city, description, latitude, longitude, status })
-			.where(eq(area.id, id));
+			.where(eq(area.id, areaId));
 		throw redirect(303, '/area');
 	},
-
+	//TODO: Change this to SOFT DELETE
 	delete: async (event) => {
 		const u = requireUser(event);
-		const { id } = event.params as { id: string };
+		const { areaId } = event.params;
+		if (!areaId) throw error(400, 'Falta areaId');
 
-		const [item] = await db.select().from(area).where(eq(area.id, id));
+		const [item] = await db.select().from(area).where(eq(area.id, areaId));
 		if (!item) throw error(404);
 
 		assertOwnerOrAdmin(u, item);
 
-		await db.delete(area).where(eq(area.id, id));
+		await db.delete(area).where(eq(area.id, areaId));
 		throw redirect(303, '/area');
 	}
 };

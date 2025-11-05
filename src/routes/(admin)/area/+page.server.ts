@@ -83,7 +83,7 @@ export const actions: Actions = {
 	},
 
 	suspend: async (event) => {
-		//const admin = requireAdmin(event);
+		requireAdmin(event);
 		const data = await event.request.formData();
 		const id = String(data.get('id') ?? '');
 		if (!id) return fail(400, { message: 'Sin id' });
@@ -104,14 +104,13 @@ export const actions: Actions = {
 	},
 
 	softDelete: async (event) => {
-		//const admin = requireAdmin(event);
+		requireAdmin(event);
 		const data = await event.request.formData();
 		const id = String(data.get('id') ?? '');
 		if (!id) return fail(400, { message: 'No se ha enviado un ID' });
 
 		await db.update(area).set({ status: 'deleted' }).where(eq(area.id, id));
 
-		//await lucia.invalidateUserSessions(id);
 		throw redirect(303, event.url.pathname);
 	},
 

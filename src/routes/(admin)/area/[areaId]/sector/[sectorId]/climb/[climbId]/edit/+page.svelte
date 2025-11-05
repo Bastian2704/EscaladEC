@@ -5,17 +5,23 @@
 		item: {
 			id: string;
 			areaId: string;
+			sectorId: string;
 			name: string;
-			orientation: string;
-			description: string;
+			category: string;
+			climbType: string;
+			requiredEquipment: string;
 			status: Status;
 			createdAt: string;
 			updatedAt?: string | null;
+			deletedAt?: string | null;
 		};
+		page: number;
+		role: string;
+		status: string;
 	};
 </script>
 
-<h1 class="mb-4 text-xl">Sector {data.item.name}</h1>
+<h1 class="mb-4 text-xl">Climb {data.item.name}</h1>
 
 <form method="POST" class="space-y-3">
 	<label>
@@ -24,13 +30,16 @@
 	</label>
 
 	<label>
-		Orientación:
-		<input type="text" name="orientation" value={data.item.orientation} required />
+		Categoría:
+		<input type="text" name="category" value={data.item.category} required />
 	</label>
-
 	<label>
-		Descripción:
-		<textarea name="description" rows="3">{data.item.description}</textarea>
+		Tipo de Escalada:
+		<input type="text" name="climbType" value={data.item.climbType} required />
+	</label>
+	<label>
+		Equipo Requerido:
+		<input type="text" name="requiredEquipment" value={data.item.requiredEquipment} required />
 	</label>
 
 	<label>
@@ -44,8 +53,9 @@
 
 	<div class="mt-4 flex gap-2">
 		<button formaction="?/save" class="border bg-green-100 px-3 py-1">Guardar</button>
-		<button formaction="?/delete" class="border bg-red-100 px-3 py-1">Eliminar</button>
+		<button formaction="?/softDelete" class="border bg-red-100 px-3 py-1">Eliminar</button>
+		<a href="../" class="inline-block border bg-blue-100 px-3 py-1">Salir</a>
 	</div>
 </form>
-<h1 class="">Climbs de {data.item.name}</h1>
-<a href={`/area/${data.item.areaId}/sector/${data.item.id}/climbs/`}> Visualizar </a>
+<!--<h1 class="">Climbs de {data.item.name}</h1>
+<a href={`/area/${data.item.areaId}/sector/${data.item.id}/climbs/`}> Visualizar </a>-->
