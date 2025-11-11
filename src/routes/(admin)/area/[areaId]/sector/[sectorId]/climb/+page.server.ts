@@ -2,7 +2,9 @@ import { db } from '$lib/server/db';
 import { climb } from '$lib/server/db/schema';
 import { requireUser } from '$lib/server/auth/guards';
 import { requireAdmin } from '$lib/server/auth/guards';
-import { climbType } from '$lib/contants/constants';
+import { category } from '$lib/contants/constants';
+import { ropeClimbType } from '$lib/contants/constants';
+import { noRopeClimbType } from '$lib/contants/constants';
 import { fail, redirect } from '@sveltejs/kit';
 import { eq } from 'drizzle-orm';
 import type { Actions, PageServerLoad } from './$types';
@@ -10,12 +12,6 @@ import type { Actions, PageServerLoad } from './$types';
 const PAGE_SIZE = 10;
 
 //TODO Select logic
-const climbtype = climbType;
-type climbType = (typeof climbtype)[number];
-
-function isClimbType(value: string): value is climbType {
-	return climbtype.includes(value);
-}
 
 export const load: PageServerLoad = async (event) => {
 	requireUser(event);
@@ -24,6 +20,7 @@ export const load: PageServerLoad = async (event) => {
 
 	const url = event.url;
 	const page = Math.max(1, Number(url.searchParams.get('page') ?? 1));
+	//TODO Select
 	const climbType = url.searchParams.get('climbType') ?? '';
 	const status = url.searchParams.get('status') ?? 'active';
 	const offset = (page - 1) * PAGE_SIZE;

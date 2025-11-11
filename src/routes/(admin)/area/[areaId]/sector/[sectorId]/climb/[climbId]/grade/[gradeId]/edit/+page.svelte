@@ -4,42 +4,44 @@
 	export let data: {
 		item: {
 			id: string;
+			areaId: string;
 			sectorId: string;
-			name: string;
-			category: string;
-			climbType: string;
-			requiredEquipment: string;
+			buildId: string;
+			gradeSystem: string;
+			value: string;
+			accomplished: boolean;
+            difficultyLevel: number;
+            likes: number;
 			status: Status;
 			createdAt: string;
 			updatedAt?: string | null;
 			deletedAt?: string | null;
 		};
-		areaId: string;
 		page: number;
 		role: string;
 		status: string;
 	};
 </script>
 
-<h1 class="mb-4 text-xl">Climb {data.item.name}</h1>
+<h1 class="mb-4 text-xl">Grado </h1>
 
 <form method="POST" class="space-y-3">
 	<label>
 		Nombre:
-		<input type="text" name="name" value={data.item.name} required />
+		<input type="text" name="gradeSystem" value={data.item.gradeSystem} required />
 	</label>
 
 	<label>
 		Categoría:
-		<input type="text" name="category" value={data.item.category} required />
+		<input type="text" name="value" value={data.item.value} required />
 	</label>
 	<label>
 		Tipo de Escalada:
-		<input type="text" name="climbType" value={data.item.climbType} required />
+		<input type="boolean" name="accomplished" value={data.item.accomplished} required />
 	</label>
 	<label>
 		Equipo Requerido:
-		<input type="text" name="requiredEquipment" value={data.item.requiredEquipment} required />
+		<input type="number" name="difficultyLevel" value={data.item.difficultyLevel} required />
 	</label>
 
 	<label>
@@ -57,5 +59,3 @@
 		<a href="../" class="inline-block border bg-blue-100 px-3 py-1">Salir</a>
 	</div>
 </form>
-<h1 class="">Grades de {data.item.name}</h1>
-<a href={`/area/${data.areaId}/sector/${data.item.sectorId}/climb/${data.item.id}/grade`}> Visualizar </a>
