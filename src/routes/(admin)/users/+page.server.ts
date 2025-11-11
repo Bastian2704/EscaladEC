@@ -22,8 +22,7 @@ export const load: PageServerLoad = async (event) => {
 	const url = event.url;
 	const page = Math.max(1, Number(url.searchParams.get('page') ?? 1));
 	const role = url.searchParams.get('role') ?? '';
-	const status = url.searchParams.get('status') ?? 'active'; // active|suspended|deleted
-
+	const status = url.searchParams.get('status') ?? 'active';
 	const filters = [];
 	if (role && isRole(role)) {
 		filters.push(eq(users.role, role));
@@ -63,13 +62,15 @@ async function assertNotLastAdmin(targetUserId: string) {
 
 export const actions: Actions = {
 	createUser: async (event) => {
-		const admin = requireAdmin(event);
+		requireAdmin(event);
 
 		const data = await event.request.formData();
 		const email = String(data.get('email') ?? '')
 			.toLowerCase()
 			.trim();
 		const password = String(data.get('password') ?? '');
+		const username = String(data.get('username') ?? '');
+		const age = String(data.get('age') ?? '');
 		const role = String(data.get('role') ?? 'user').toLowerCase();
 
 		if (!email || password.length < 8) {
@@ -88,6 +89,8 @@ export const actions: Actions = {
 		const passwordHash = await hash(password);
 		await db.insert(users).values({
 			email,
+			username,
+			age,
 			passwordHash,
 			role,
 			status: 'active',

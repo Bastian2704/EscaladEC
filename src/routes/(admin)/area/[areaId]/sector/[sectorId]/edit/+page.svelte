@@ -44,6 +44,9 @@
 
 	<div class="mt-4 flex gap-2">
 		<button formaction="?/save" class="border bg-green-100 px-3 py-1">Guardar</button>
-		<button formaction="?/delete" class="border bg-red-100 px-3 py-1">Eliminar</button>
+		<button formaction="?/softDelete" class="border bg-red-100 px-3 py-1">Eliminar</button>
+		<a href="../" class="inline-block border bg-blue-100 px-3 py-1">Salir</a>
 	</div>
 </form>
+<h1 class="">Climbs de {data.item.name}</h1>
+<a href={`/area/${data.item.areaId}/sector/${data.item.id}/climb/`}> Visualizar </a>

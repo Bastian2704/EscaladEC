@@ -1,0 +1,65 @@
+import { db } from '$lib/server/db';
+import { climb } from '$lib/server/db/schema';
+import { requireUser } from '$lib/server/auth/guards';
+import { error, fail, redirect } from '@sveltejs/kit';
+import { eq } from 'drizzle-orm';
+import type { Actions, PageServerLoad } from './$types';
+
+function assertOwnerOrAdmin(user: { id: string; role: string }, item: { createdBy: string }) {
+	if (user.role === 'admin') return;
+	if (item.createdBy !== user.id) throw error(403, 'No autorizado');
+}
+
+export const load: PageServerLoad = async (event) => {
+	const user = requireUser(event);
+	const { areaId, sectorId, climbId } = event.params;
+
+	const [item] = await db.select().from(climb).where(eq(climb.id, climbId));
+	if (!item) throw error(404);
+
+	assertOwnerOrAdmin(user, item);
+
+	return { item, areaId, sectorId, climbId };
+};
+
+export const actions: Actions = {
+	save: async (event) => {
+		const u = requireUser(event);
+
+		const { climbId } = event.params;
+
+		const [item] = await db.select().from(climb).where(eq(climb.id, climbId));
+		if (!item) throw error(404);
+
+		assertOwnerOrAdmin(u, item);
+
+		const data = await event.request.formData();
+		const name = String(data.get('name') ?? '').trim();
+		const category = String(data.get('category') ?? '').trim();
+		const climbType = String(data.get('climbType') ?? '').trim();
+		const requiredEquipment = String(data.get('requiredEquipment') ?? '').trim();
+		const status = String(data.get('status') ?? '');
+
+		if (!name || !category || !climbType || !requiredEquipment)
+			return fail(400, { message: 'Datos inválidos' });
+
+		await db
+			.update(climb)
+			.set({ name, category, climbType, requiredEquipment, status })
+			.where(eq(climb.id, climbId));
+		throw redirect(303, event.url.pathname);
+	},
+
+	softDelete: async (event) => {
+		const u = requireUser(event);
+		const { climbId } = event.params;
+
+		const [item] = await db.select().from(climb).where(eq(climb.id, climbId));
+		if (!item) throw error(404);
+
+		assertOwnerOrAdmin(u, item);
+
+		await db.update(climb).set({ status: 'deleted' }).where(eq(climb.id, climbId));
+		throw redirect(303, event.url.pathname);
+	}
+};

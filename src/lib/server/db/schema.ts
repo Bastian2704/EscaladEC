@@ -4,9 +4,12 @@ import { pgTable, text, timestamp, uuid, boolean, real, integer } from 'drizzle-
 export const users = pgTable('users', {
 	id: uuid('id').primaryKey().defaultRandom(),
 	email: text('email').notNull().unique(),
-	passwordHash: text('password_hash').notNull(),
+	username: text('username').notNull().unique(),
+	climbingLevel: text('climbingLevel'),
+	age: text('age').notNull(),
 	role: text('role').notNull().default('user'),
-	status: text('status').notNull().default('active'), // 'active' | 'suspended' | 'deleted'
+	status: text('status').notNull().default('active'),
+	passwordHash: text('password_hash').notNull(),
 	createdAt: timestamp('created_at').notNull().defaultNow(),
 	updatedAt: timestamp('updated_at'),
 	deletedAt: timestamp('deleted_at')

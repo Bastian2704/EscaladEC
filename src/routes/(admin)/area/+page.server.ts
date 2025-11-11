@@ -3,7 +3,7 @@ import { area } from '$lib/server/db/schema';
 import { requireAdmin } from '$lib/server/auth/guards';
 import { lucia } from '$lib/server/auth/lucia';
 import { fail, redirect } from '@sveltejs/kit';
-import { and, eq, isNull } from 'drizzle-orm';
+import { and, eq } from 'drizzle-orm';
 import { provinces } from '$lib/contants/constants';
 import type { PageServerLoad, Actions } from './$types';
 
@@ -43,7 +43,7 @@ export const load: PageServerLoad = async (event) => {
 };
 export const actions: Actions = {
 	createArea: async (event) => {
-		const admin = requireAdmin(event);
+		//const admin = requireAdmin(event);
 
 		const data = await event.request.formData();
 
@@ -83,14 +83,14 @@ export const actions: Actions = {
 	},
 
 	suspend: async (event) => {
-		const admin = requireAdmin(event);
+		requireAdmin(event);
 		const data = await event.request.formData();
 		const id = String(data.get('id') ?? '');
 		if (!id) return fail(400, { message: 'Sin id' });
 
 		await db.update(area).set({ status: 'suspended' }).where(eq(area.id, id));
 		await lucia.invalidateUserSessions(id);
-		throw redirect(303, '/area');
+		throw redirect(303, event.url.pathname);
 	},
 
 	resume: async (event) => {
@@ -100,19 +100,18 @@ export const actions: Actions = {
 		if (!id) return fail(400, { message: 'Sin id' });
 
 		await db.update(area).set({ status: 'active' }).where(eq(area.id, id));
-		throw redirect(303, '/area');
+		throw redirect(303, event.url.pathname);
 	},
 
 	softDelete: async (event) => {
-		const admin = requireAdmin(event);
+		requireAdmin(event);
 		const data = await event.request.formData();
 		const id = String(data.get('id') ?? '');
 		if (!id) return fail(400, { message: 'No se ha enviado un ID' });
 
 		await db.update(area).set({ status: 'deleted' }).where(eq(area.id, id));
 
-		//		await lucia.invalidateUserSessions(id);
-		throw redirect(303, '/area?status=deleted');
+		throw redirect(303, event.url.pathname);
 	},
 
 	restore: async (event) => {
@@ -122,6 +121,6 @@ export const actions: Actions = {
 		if (!id) return fail(400, { message: 'No se ha enviado un ID' });
 
 		await db.update(area).set({ status: 'active' }).where(eq(area.id, id));
-		throw redirect(303, '/area');
+		throw redirect(303, event.url.pathname);
 	}
 };

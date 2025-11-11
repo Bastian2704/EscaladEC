@@ -1,4 +1,3 @@
-// src/routes/logout/+server.ts
 import type { RequestHandler } from './$types';
 import { lucia } from '$lib/server/auth/lucia';
 import { redirect } from '@sveltejs/kit';
@@ -9,7 +8,7 @@ export const POST: RequestHandler = async ({ locals, cookies }) => {
 			await lucia.invalidateSession(locals.session.id);
 		}
 	} finally {
-		// siempre limpia la cookie del navegador
+		// cookie cleaning
 		const blank = lucia.createBlankSessionCookie();
 		cookies.set(blank.name, blank.value, { ...blank.attributes, path: '/' });
 	}
