@@ -4,7 +4,6 @@ import { requireUser } from '$lib/server/auth/guards';
 import { error, fail, redirect } from '@sveltejs/kit';
 import { eq } from 'drizzle-orm';
 import type { Actions, PageServerLoad } from './$types';
-import { boolean } from 'drizzle-orm/mysql-core';
 
 function assertOwnerOrAdmin(user: { id: string; role: string }, item: { publishedBy: string }) {
     if (user.role === 'admin') return;
