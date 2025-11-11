@@ -4,7 +4,6 @@
 	export let data: {
 		item: {
 			id: string;
-			areaId: string;
 			sectorId: string;
 			name: string;
 			category: string;
@@ -15,6 +14,7 @@
 			updatedAt?: string | null;
 			deletedAt?: string | null;
 		};
+		areaId: string;
 		page: number;
 		role: string;
 		status: string;
@@ -57,5 +57,5 @@
 		<a href="../" class="inline-block border bg-blue-100 px-3 py-1">Salir</a>
 	</div>
 </form>
-<!--<h1 class="">Climbs de {data.item.name}</h1>
-<a href={`/area/${data.item.areaId}/sector/${data.item.id}/climbs/`}> Visualizar </a>-->
+<h1 class="">Grades de {data.item.name}</h1>
+<a href={`/area/${data.areaId}/sector/${data.item.sectorId}/climb/${data.item.id}/grade`}> Visualizar </a>
