@@ -106,9 +106,11 @@ export const grade = pgTable('grade', {
 	gradeSystem: text('grade_system').notNull(),
 	value: text('value').notNull(),
 	publishedAt: timestamp('published_at').notNull(),
+	publishedBy: text('publishedBy').notNull(), //Needs adding in E-R diagram
 	accomplished: boolean('accomplished').notNull(),
 	difficultyLevel: integer('difficulty_level').notNull(),
-	likes: integer('likes').notNull()
+	likes: integer('likes'),
+	status: text('status').notNull().default('active'), //Needs adding in E-R diagram
 });
 
 /** =======================
