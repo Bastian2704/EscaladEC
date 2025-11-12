@@ -4,7 +4,7 @@ import { requireAdmin } from '$lib/server/auth/guards';
 import { lucia } from '$lib/server/auth/lucia';
 import { fail, redirect } from '@sveltejs/kit';
 import { and, eq } from 'drizzle-orm';
-import { provinces } from '$lib/contants/constants';
+import { provinces, Status } from '$lib/contants/constants';
 import type { PageServerLoad, Actions } from './$types';
 
 const PAGE_SIZE = 10;
@@ -46,6 +46,7 @@ export const actions: Actions = {
 		//const admin = requireAdmin(event);
 
 		const data = await event.request.formData();
+		const user = event.locals.user;
 
 		//TODO: Change this to validate select options
 		const province = String(data.get('province') ?? '').trim();
@@ -75,8 +76,9 @@ export const actions: Actions = {
 			longitude,
 			status: 'active',
 			createdAt: new Date(),
-			createdBy: 'user',
-			updatedBy: 'user'
+			updatedAt: new Date(),
+			createdBy: user.id,
+			updatedBy: user.id
 		} as any);
 
 		return { success: true, message: `Area: ${name}, creado correctamente.` };
@@ -87,8 +89,12 @@ export const actions: Actions = {
 		const data = await event.request.formData();
 		const id = String(data.get('id') ?? '');
 		if (!id) return fail(400, { message: 'Sin id' });
+		const user = event.locals.user;
 
-		await db.update(area).set({ status: 'suspended' }).where(eq(area.id, id));
+		await db
+			.update(area)
+			.set({ status: Status.suspended, updatedAt: new Date(), updatedBy: user.id })
+			.where(eq(area.id, id));
 		await lucia.invalidateUserSessions(id);
 		throw redirect(303, event.url.pathname);
 	},
@@ -98,8 +104,12 @@ export const actions: Actions = {
 		const data = await event.request.formData();
 		const id = String(data.get('id') ?? '');
 		if (!id) return fail(400, { message: 'Sin id' });
+		const user = event.locals.user;
 
-		await db.update(area).set({ status: 'active' }).where(eq(area.id, id));
+		await db
+			.update(area)
+			.set({ status: Status.active, updatedAt: new Date(), updatedBy: user.id })
+			.where(eq(area.id, id));
 		throw redirect(303, event.url.pathname);
 	},
 
@@ -108,8 +118,17 @@ export const actions: Actions = {
 		const data = await event.request.formData();
 		const id = String(data.get('id') ?? '');
 		if (!id) return fail(400, { message: 'No se ha enviado un ID' });
+		const user = event.locals.user;
 
-		await db.update(area).set({ status: 'deleted' }).where(eq(area.id, id));
+		await db
+			.update(area)
+			.set({
+				status: Status.deleted,
+				updatedAt: new Date(),
+				deletedAt: new Date(),
+				updatedBy: user.id
+			})
+			.where(eq(area.id, id));
 
 		throw redirect(303, event.url.pathname);
 	},
@@ -119,8 +138,12 @@ export const actions: Actions = {
 		const data = await event.request.formData();
 		const id = String(data.get('id') ?? '');
 		if (!id) return fail(400, { message: 'No se ha enviado un ID' });
+		const user = event.locals.user;
 
-		await db.update(area).set({ status: 'active' }).where(eq(area.id, id));
+		await db
+			.update(area)
+			.set({ status: Status.active, updatedAt: new Date(), updatedBy: user.id })
+			.where(eq(area.id, id));
 		throw redirect(303, event.url.pathname);
 	}
 };
