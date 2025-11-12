@@ -31,74 +31,172 @@ export const provinces = [
 	'Zamora Chinchipe'
 ];
 
-export const category = [
-	'Escalada con Cuerda',
-	'Escalada sin Cuerda'
-];
-//Related to Category
-export const ropeClimbType = [
-	'Escalada deportiva',
-	'Escalada tradicional (trad)',  
-	'Vía de varios largos (multi-pitch)', 
-	'Escalada en gran pared (big wall)'
-];
-//Related to Category
-export const noRopeClimbType = [
-	'Boulder',
-	'Psicobloc (Deep Water Soloing)', 
-	'Highball', 
-];
-//Related to Category
-export const gradeSystem = [
-	'YDS (Yosemite Decimal System)',
-	'Francesa',
-	'British (E-grade)',
-	'Fontainebleau',
-	'VScale',
-];
-//Related to gradeSystem
-export const valueGradeSystem = {
+export const category = {
+	'Escalada con Cuerda': [
+		'Escalada deportiva',
+		'Escalada tradicional (trad)',
+		'Vía de varios largos (multi-pitch)',
+		'Escalada en gran pared (big wall)'
+	],
+	'Escalada sin Cuerda': ['Boulder', 'Psicobloc (Deep Water Soloing)', 'Highball']
+} as const;
+
+export type CategoryGroup = keyof typeof category;
+
+export const isValidCategoryGroup = (g: string): g is CategoryGroup =>
+	Object.prototype.hasOwnProperty.call(category, g);
+
+export const isValidClimbType = (g: string, t: string) =>
+	isValidCategoryGroup(g) && (category[g as CategoryGroup] as readonly string[]).includes(t);
+
+export const gradeSystem = {
 	'YDS (Yosemite Decimal System)': [
-		'5.0', '5.1', '5.2', '5.3', '5.4', '5.5', '5.6', '5.7', '5.8', '5.9',
-		'5.10a', '5.10b', '5.10c', '5.10d',
-		'5.11a', '5.11b', '5.11c', '5.11d',
-		'5.12a', '5.12b', '5.12c', '5.12d',
-		'5.13a', '5.13b', '5.13c', '5.13d',
-		'5.14a', '5.14b', '5.14c', '5.14d',
-		'5.15a', '5.15b', '5.15c', '5.15d'
+		'5.0',
+		'5.1',
+		'5.2',
+		'5.3',
+		'5.4',
+		'5.5',
+		'5.6',
+		'5.7',
+		'5.8',
+		'5.9',
+		'5.10a',
+		'5.10b',
+		'5.10c',
+		'5.10d',
+		'5.11a',
+		'5.11b',
+		'5.11c',
+		'5.11d',
+		'5.12a',
+		'5.12b',
+		'5.12c',
+		'5.12d',
+		'5.13a',
+		'5.13b',
+		'5.13c',
+		'5.13d',
+		'5.14a',
+		'5.14b',
+		'5.14c',
+		'5.14d',
+		'5.15a',
+		'5.15b',
+		'5.15c',
+		'5.15d'
 	],
-
 	Francesa: [
-		'2', '3', '4a', '4b', '4c',
-		'5a', '5b', '5c',
-		'6a', '6a+', '6b', '6b+', '6c', '6c+',
-		'7a', '7a+', '7b', '7b+', '7c', '7c+',
-		'8a', '8a+', '8b', '8b+', '8c', '8c+',
-		'9a', '9a+', '9b', '9b+', '9c'
+		'2',
+		'3',
+		'4a',
+		'4b',
+		'4c',
+		'5a',
+		'5b',
+		'5c',
+		'6a',
+		'6a+',
+		'6b',
+		'6b+',
+		'6c',
+		'6c+',
+		'7a',
+		'7a+',
+		'7b',
+		'7b+',
+		'7c',
+		'7c+',
+		'8a',
+		'8a+',
+		'8b',
+		'8b+',
+		'8c',
+		'8c+',
+		'9a',
+		'9a+',
+		'9b',
+		'9b+',
+		'9c'
 	],
-
-
 	'British (E-grade)': [
-		'Mod', 'Diff', 'VDiff', 'HVD', 
-		'Sev', 'HS', 'VS', 'HVS',
-		'E1 5a', 'E2 5b', 'E3 5c', 'E4 6a', 'E5 6b',
-		'E6 6b', 'E7 6c', 'E8 6c', 'E9 7a', 'E10 7b', 'E11 7c'
+		'Mod',
+		'Diff',
+		'VDiff',
+		'HVD',
+		'Sev',
+		'HS',
+		'VS',
+		'HVS',
+		'E1 5a',
+		'E2 5b',
+		'E3 5c',
+		'E4 6a',
+		'E5 6b',
+		'E6 6b',
+		'E7 6c',
+		'E8 6c',
+		'E9 7a',
+		'E10 7b',
+		'E11 7c'
 	],
-
-
 	// Fontainebleau (Boulder)
 	Fontainebleau: [
-		'3', '4', '4+', '5', '5+', 
-		'6A', '6A+', '6B', '6B+', '6C', '6C+',
-		'7A', '7A+', '7B', '7B+', '7C', '7C+',
-		'8A', '8A+', '8B', '8B+', '8C', '8C+', '9A'
+		'3',
+		'4',
+		'4+',
+		'5',
+		'5+',
+		'6A',
+		'6A+',
+		'6B',
+		'6B+',
+		'6C',
+		'6C+',
+		'7A',
+		'7A+',
+		'7B',
+		'7B+',
+		'7C',
+		'7C+',
+		'8A',
+		'8A+',
+		'8B',
+		'8B+',
+		'8C',
+		'8C+',
+		'9A'
 	],
-
 	// V-Scale (Boulder)
 	VScale: [
-		'VB', 'V0-', 'V0', 'V0+', 
-		'V1', 'V2', 'V3', 'V4', 'V5', 'V6', 
-		'V7', 'V8', 'V9', 'V10', 'V11', 'V12', 
-		'V13', 'V14', 'V15', 'V16', 'V17'
+		'VB',
+		'V0-',
+		'V0',
+		'V0+',
+		'V1',
+		'V2',
+		'V3',
+		'V4',
+		'V5',
+		'V6',
+		'V7',
+		'V8',
+		'V9',
+		'V10',
+		'V11',
+		'V12',
+		'V13',
+		'V14',
+		'V15',
+		'V16',
+		'V17'
 	]
-};
+} as const;
+
+export type GradeSystemKey = keyof typeof gradeSystem;
+
+export const isValidSystem = (s: string): s is GradeSystemKey =>
+	Object.keys(gradeSystem).includes(s);
+
+export const isValidValue = (system: GradeSystemKey, v: string) =>
+	(gradeSystem[system] as readonly string[]).includes(v);
