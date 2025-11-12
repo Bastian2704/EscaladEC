@@ -58,4 +58,6 @@
 	</div>
 </form>
 <h1 class="">Grades de {data.item.name}</h1>
-<a href={`/area/${data.areaId}/sector/${data.item.sectorId}/climb/${data.item.id}/grade`}> Visualizar </a>
+<a href={`/area/${data.areaId}/sector/${data.item.sectorId}/climb/${data.item.id}/grade`}>
+	Visualizar
+</a>

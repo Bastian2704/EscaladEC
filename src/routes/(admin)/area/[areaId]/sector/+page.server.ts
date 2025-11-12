@@ -5,6 +5,7 @@ import { requireAdmin } from '$lib/server/auth/guards';
 import { fail, redirect } from '@sveltejs/kit';
 import { eq } from 'drizzle-orm';
 import type { Actions, PageServerLoad } from './$types';
+import { Status } from '$lib/contants/constants';
 
 const PAGE_SIZE = 10;
 
@@ -35,7 +36,7 @@ export const actions: Actions = {
 	createSector: async (event) => {
 		requireAdmin(event);
 		const { areaId } = event.params;
-
+		const user = event.locals.user;
 		const data = await event.request.formData();
 		const name = String(data.get('name') ?? '').trim();
 		const orientation = String(data.get('orientation') ?? '').trim();
@@ -54,8 +55,9 @@ export const actions: Actions = {
 			description,
 			status: 'active',
 			createdAt: new Date(),
-			createdBy: 'user',
-			updatedBy: 'user'
+			updatedAt: new Date(),
+			createdBy: user.id,
+			updatedBy: user.id
 		} as any);
 
 		return { success: true, message: `Sector: ${name}, creado correctamente.` };
@@ -65,9 +67,13 @@ export const actions: Actions = {
 		requireAdmin(event);
 		const data = await event.request.formData();
 		const id = String(data.get('id') ?? '');
+		const user = event.locals.user;
 		if (!id) return fail(400, { message: 'Sin id' });
 
-		await db.update(sector).set({ status: 'suspended' }).where(eq(sector.id, id));
+		await db
+			.update(sector)
+			.set({ status: Status.suspended, updatedAt: new Date(), updatedBy: user.id })
+			.where(eq(sector.id, id));
 
 		throw redirect(303, event.url.pathname);
 	},
@@ -76,9 +82,13 @@ export const actions: Actions = {
 		requireAdmin(event);
 		const data = await event.request.formData();
 		const id = String(data.get('id') ?? '');
+		const user = event.locals.user;
 		if (!id) return fail(400, { message: 'Sin id' });
 
-		await db.update(sector).set({ status: 'active' }).where(eq(sector.id, id));
+		await db
+			.update(sector)
+			.set({ status: Status.active, updatedAt: new Date(), updatedBy: user.id })
+			.where(eq(sector.id, id));
 
 		throw redirect(303, event.url.pathname);
 	},
@@ -87,9 +97,18 @@ export const actions: Actions = {
 		requireAdmin(event);
 		const data = await event.request.formData();
 		const id = String(data.get('id') ?? '');
+		const user = event.locals.user;
 		if (!id) return fail(400, { message: 'No se ha enviado un ID' });
 
-		await db.update(sector).set({ status: 'deleted' }).where(eq(sector.id, id));
+		await db
+			.update(sector)
+			.set({
+				status: Status.deleted,
+				updatedAt: new Date(),
+				deletedAt: new Date(),
+				updatedBy: user.id
+			})
+			.where(eq(sector.id, id));
 
 		throw redirect(303, event.url.pathname);
 	},
@@ -98,9 +117,13 @@ export const actions: Actions = {
 		requireAdmin(event);
 		const data = await event.request.formData();
 		const id = String(data.get('id') ?? '');
+		const user = event.locals.user;
 		if (!id) return fail(400, { message: 'No se ha enviado un ID' });
 
-		await db.update(sector).set({ status: 'active' }).where(eq(sector.id, id));
+		await db
+			.update(sector)
+			.set({ status: Status.active, updatedAt: new Date(), updatedBy: user.id })
+			.where(eq(sector.id, id));
 
 		throw redirect(303, event.url.pathname);
 	}

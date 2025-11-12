@@ -2,9 +2,12 @@ import { db } from '$lib/server/db';
 import { climb } from '$lib/server/db/schema';
 import { requireUser } from '$lib/server/auth/guards';
 import { requireAdmin } from '$lib/server/auth/guards';
-import { category } from '$lib/contants/constants';
-import { ropeClimbType } from '$lib/contants/constants';
-import { noRopeClimbType } from '$lib/contants/constants';
+import {
+	category as categoryMap,
+	isValidCategoryGroup,
+	isValidClimbType,
+	Status
+} from '$lib/contants/constants';
 import { fail, redirect } from '@sveltejs/kit';
 import { eq } from 'drizzle-orm';
 import type { Actions, PageServerLoad } from './$types';
@@ -20,8 +23,6 @@ export const load: PageServerLoad = async (event) => {
 
 	const url = event.url;
 	const page = Math.max(1, Number(url.searchParams.get('page') ?? 1));
-	//TODO Select
-	const climbType = url.searchParams.get('climbType') ?? '';
 	const status = url.searchParams.get('status') ?? 'active';
 	const offset = (page - 1) * PAGE_SIZE;
 
@@ -37,7 +38,9 @@ export const load: PageServerLoad = async (event) => {
 		page,
 		status,
 		sectorId,
-		areaId
+		areaId,
+		categoryGroups: Object.keys(categoryMap),
+		categoryOptions: categoryMap
 	};
 };
 export const actions: Actions = {
@@ -47,29 +50,37 @@ export const actions: Actions = {
 		const user = event.locals.user;
 		const data = await event.request.formData();
 		const name = String(data.get('name') ?? '').trim();
-		//TODO select
-		const category = String(data.get('category') ?? '').trim();
-		//TODO select
+		const categoryGroup = String(data.get('category') ?? '').trim();
 		const climbType = String(data.get('climbType') ?? '').trim();
 		const requiredEquipment = String(data.get('requiredEquipment') ?? '').trim();
 
-		if (!name || !category || !climbType || !requiredEquipment) {
+		if (!name || !categoryGroup || !climbType || !requiredEquipment) {
 			return fail(400, {
 				message: 'Nombre del Climb, Categoria, Tipo de Escalada Y Equipo Requerido son Obligatorias'
 			});
+		}
+		if (!name || !categoryGroup || !climbType || !requiredEquipment) {
+			return fail(400, { message: 'Nombre, Categoría, Tipo y Equipo Requerido son obligatorios.' });
+		}
+		if (!isValidCategoryGroup(categoryGroup)) {
+			return fail(400, { message: 'Categoría inválida.' });
+		}
+		if (!isValidClimbType(categoryGroup, climbType)) {
+			return fail(400, { message: 'El tipo no corresponde a la categoría seleccionada.' });
 		}
 
 		await db.insert(climb).values({
 			sectorId,
 			userId: user.id,
 			name,
-			category,
+			category: categoryGroup,
 			climbType,
 			requiredEquipment,
 			status: 'active',
 			createdAt: new Date(),
-			createdBy: 'user',
-			updatedBy: 'user'
+			updatedAt: new Date(),
+			createdBy: user.id,
+			updatedBy: user.id
 		} as any);
 
 		return { success: true, message: `Climb: ${name}, creado correctamente.` };
@@ -78,10 +89,14 @@ export const actions: Actions = {
 	suspend: async (event) => {
 		requireAdmin(event);
 		const data = await event.request.formData();
+		const user = event.locals.user;
 		const id = String(data.get('id') ?? '');
 		if (!id) return fail(400, { message: 'Sin id' });
 
-		await db.update(climb).set({ status: 'suspended' }).where(eq(climb.id, id));
+		await db
+			.update(climb)
+			.set({ status: Status.suspended, updatedAt: new Date(), updatedBy: user.id })
+			.where(eq(climb.id, id));
 
 		throw redirect(303, event.url.pathname);
 	},
@@ -89,10 +104,14 @@ export const actions: Actions = {
 	resume: async (event) => {
 		requireAdmin(event);
 		const data = await event.request.formData();
+		const user = event.locals.user;
 		const id = String(data.get('id') ?? '');
 		if (!id) return fail(400, { message: 'Sin id' });
 
-		await db.update(climb).set({ status: 'active' }).where(eq(climb.id, id));
+		await db
+			.update(climb)
+			.set({ status: Status.active, updatedAt: new Date(), updatedBy: user.id })
+			.where(eq(climb.id, id));
 
 		throw redirect(303, event.url.pathname);
 	},
@@ -100,10 +119,19 @@ export const actions: Actions = {
 	softDelete: async (event) => {
 		requireAdmin(event);
 		const data = await event.request.formData();
+		const user = event.locals.user;
 		const id = String(data.get('id') ?? '');
 		if (!id) return fail(400, { message: 'No se ha enviado un ID' });
 
-		await db.update(climb).set({ status: 'deleted' }).where(eq(climb.id, id));
+		await db
+			.update(climb)
+			.set({
+				status: Status.deleted,
+				updatedAt: new Date(),
+				updatedBy: user.id,
+				deletedAt: new Date()
+			})
+			.where(eq(climb.id, id));
 
 		throw redirect(303, event.url.pathname);
 	},
@@ -111,10 +139,14 @@ export const actions: Actions = {
 	restore: async (event) => {
 		requireAdmin(event);
 		const data = await event.request.formData();
+		const user = event.locals.user;
 		const id = String(data.get('id') ?? '');
 		if (!id) return fail(400, { message: 'No se ha enviado un ID' });
 
-		await db.update(climb).set({ status: 'active' }).where(eq(climb.id, id));
+		await db
+			.update(climb)
+			.set({ status: Status.active, updatedAt: new Date(), updatedBy: user.id })
+			.where(eq(climb.id, id));
 
 		throw redirect(303, event.url.pathname);
 	}

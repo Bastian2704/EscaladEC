@@ -4,7 +4,6 @@
 	export let data: {
 		items: Array<{
 			id: string;
-			areaId: string;
 			sectorId: string;
 			name: string;
 			category: string;
@@ -18,7 +17,30 @@
 		page: number;
 		role: string;
 		status: string;
+		categoryGroups: string[];
+		categoryOptions: Record<string, string[]>;
 	};
+	// estado del form
+	const groups = data.categoryGroups ?? [];
+	const optionsMap = data.categoryOptions ?? {};
+
+	let selectedGroup: string = groups[0] ?? '';
+	$: typesForGroup = optionsMap[selectedGroup] ?? [];
+
+	let formCategory = selectedGroup;
+	let formClimbType = optionsMap[selectedGroup]?.[0] ?? '';
+
+	let name = '';
+	let requiredEquipment = '';
+
+	function onGroupChange() {
+		selectedGroup = formCategory;
+		formClimbType = optionsMap[selectedGroup]?.[0] ?? '';
+	}
+
+	$: if (typesForGroup.length && !typesForGroup.includes(formClimbType)) {
+		formClimbType = typesForGroup[0] ?? '';
+	}
 
 	export let form: { message?: string; success?: boolean } | undefined;
 </script>
@@ -88,29 +110,66 @@
 	</tbody>
 </table>
 
-<form method="POST" enctype="multipart/form-data">
-	<h2>Crear nuevo Climb</h2>
-	<br />
+<form method="POST" class="mt-6 space-y-3">
+	<h2 class="font-semibold">Crear nuevo Climb</h2>
 
-	<label for="name">Nombre:</label>
-	<input type="text" name="name" id="name" required />
+	<div>
+		<label for="name" class="mb-1 block">Nombre</label>
+		<input id="name" name="name" bind:value={name} required class="border px-2 py-1" />
+	</div>
 
-	<br />
+	<div>
+		<label for="category" class="mb-1 block">Categoría</label>
+		<select
+			id="category"
+			name="category"
+			bind:value={formCategory}
+			on:change={onGroupChange}
+			required
+			class="border px-2 py-1"
+			disabled={!groups.length}
+		>
+			{#each groups as g}
+				<option value={g}>{g}</option>
+			{/each}
+		</select>
+	</div>
 
-	<label for="category">Categoría:</label>
-	<input type="text" name="category" id="category" required />
+	<div>
+		<label for="climbType" class="mb-1 block">Tipo de Escalada</label>
+		{#if typesForGroup.length}
+			<select
+				id="climbType"
+				name="climbType"
+				bind:value={formClimbType}
+				required
+				class="border px-2 py-1"
+			>
+				{#each typesForGroup as t}
+					<option value={t}>{t}</option>
+				{/each}
+			</select>
+		{:else}
+			<input
+				id="climbType"
+				name="climbType"
+				value=""
+				class="border bg-gray-100 px-2 py-1"
+				disabled
+			/>
+		{/if}
+	</div>
 
-	<br />
+	<div>
+		<label for="requiredEquipment" class="mb-1 block">Equipo Requerido</label>
+		<input
+			id="requiredEquipment"
+			name="requiredEquipment"
+			bind:value={requiredEquipment}
+			required
+			class="border px-2 py-1"
+		/>
+	</div>
 
-	<label for="climbType">Tipo de Escalada:</label>
-	<input type="text" name="climbType" id="climbType" required />
-
-	<br />
-
-	<label for="requiredEquipment">Equipo Requerido:</label>
-	<input type="text" name="requiredEquipment" id="requiredEquipment" required />
-
-	<br />
-
-	<button type="submit" formaction="?/createClimb">Crear Climb</button>
+	<button type="submit" formaction="?/createClimb" class="border px-3 py-1">Crear Climb</button>
 </form>

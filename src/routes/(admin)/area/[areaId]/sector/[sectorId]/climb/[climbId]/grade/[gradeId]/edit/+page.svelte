@@ -10,8 +10,8 @@
 			gradeSystem: string;
 			value: string;
 			accomplished: boolean;
-            difficultyLevel: number;
-            likes: number;
+			difficultyLevel: number;
+			likes: number;
 			status: Status;
 			createdAt: string;
 			updatedAt?: string | null;
@@ -23,7 +23,7 @@
 	};
 </script>
 
-<h1 class="mb-4 text-xl">Grado </h1>
+<h1 class="mb-4 text-xl">Grado</h1>
 
 <form method="POST" class="space-y-3">
 	<label>
