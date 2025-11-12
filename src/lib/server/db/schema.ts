@@ -46,11 +46,11 @@ export const area = pgTable('area', {
 	latitude: real('latitude').notNull(),
 	longitude: real('longitude').notNull(),
 	status: text('status').notNull().default('active'),
-	createdBy: text('created_by').notNull(),
-	updatedBy: text('updated_by').notNull(),
+	createdBy: text('created_by').notNull().default('user'), //user default,
+	updatedBy: text('updated_by').notNull().default('user'), //user default,
 	createdAt: timestamp('created_at').notNull().defaultNow(),
-	updatedAt: timestamp('updated_at').notNull().defaultNow(),
-	deletedAt: timestamp('deleted_at').notNull().defaultNow()
+	updatedAt: timestamp('updated_at'), //remove defaultNow (stops taking time of birth)
+	deletedAt: timestamp('deleted_at') //remove defaultNow (stops taking time of birth)
 });
 
 /** =======================
@@ -65,11 +65,11 @@ export const sector = pgTable('sector', {
 	orientation: text('orientation').notNull(),
 	description: text('description').notNull(),
 	status: text('status').notNull().default('active'),
-	createdBy: text('created_by').notNull(),
-	updatedBy: text('updated_by').notNull(),
+	createdBy: text('created_by').notNull().default('user'), //user default,
+	updatedBy: text('updated_by').notNull().default('user'), //user default,
 	createdAt: timestamp('created_at').notNull().defaultNow(),
-	updatedAt: timestamp('updated_at').notNull().defaultNow(),
-	deletedAt: timestamp('deleted_at').notNull().defaultNow()
+	updatedAt: timestamp('updated_at'), //remove defaultNow (stops taking time of birth)
+	deletedAt: timestamp('deleted_at') //remove defaultNow (stops taking time of birth)
 });
 
 /** =======================
@@ -88,8 +88,11 @@ export const climb = pgTable('climb', {
 	climbType: text('climb_type').notNull().default('sport'),
 	requiredEquipment: text('required_equipment').notNull(),
 	status: text('status').notNull().default('active'),
-	createdBy: text('created_by').notNull(),
-	createdAt: timestamp('created_at').notNull().defaultNow()
+	createdBy: text('created_by').notNull().default('user'), //user default
+	createdAt: timestamp('created_at').notNull().defaultNow(),
+	updatedBy: text('updated_by').notNull().default('user'), //user default,
+	updatedAt: timestamp('updated_at'), //Add Validations
+	deletedAt: timestamp('deleted_at') //Add Validations
 });
 
 /** =======================
@@ -99,18 +102,21 @@ export const grade = pgTable('grade', {
 	id: uuid('id').primaryKey().defaultRandom(),
 	climbId: uuid('climb_id')
 		.notNull()
-		.references(() => climb.id),
+		.references(() => climb.id, { onDelete: 'cascade' }),
 	userId: uuid('user_id')
 		.notNull()
-		.references(() => users.id),
+		.references(() => users.id, { onDelete: 'cascade' }),
 	gradeSystem: text('grade_system').notNull(),
 	value: text('value').notNull(),
-	publishedAt: timestamp('published_at').notNull(),
-	publishedBy: text('publishedBy').notNull(), //Needs adding in E-R diagram
-	accomplished: boolean('accomplished').notNull(),
+	accomplished: boolean('accomplished').notNull().default(false), //Add False Default
 	difficultyLevel: integer('difficulty_level').notNull(),
-	likes: integer('likes'),
-	status: text('status').notNull().default('active'), //Needs adding in E-R diagram
+	likes: integer('likes').notNull().default(0),
+	status: text('status').notNull().default('active'), //TODO Needs adding in E-R diagram
+	publishedBy: text('publishedBy').notNull().default('user'), //TODO Needs adding in E-R diagram
+	createdAt: timestamp('created_at').notNull().defaultNow(), //TODO  Needs adding in E-R diagram
+	updatedBy: text('updated_by').notNull().default('user'), //Add user default,
+	updatedAt: timestamp('updated_at'), //Add Validations
+	deletedAt: timestamp('deleted_at') //Add Validations
 });
 
 /** =======================
