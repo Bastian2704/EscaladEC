@@ -1,6 +1,6 @@
 import { db } from '$lib/server/db';
 import { area } from '$lib/server/db/schema';
-import { requireAdmin } from '$lib/server/auth/guards';
+import { requireAdmin, requireUser } from '$lib/server/auth/guards';
 import { lucia } from '$lib/server/auth/lucia';
 import { fail, redirect } from '@sveltejs/kit';
 import { and, eq } from 'drizzle-orm';
@@ -17,7 +17,7 @@ function isProvince(value: string): value is Province {
 }
 
 export const load: PageServerLoad = async (event) => {
-	requireAdmin(event);
+	requireUser(event);
 
 	const url = event.url;
 	const page = Math.max(1, Number(url.searchParams.get('page') ?? 1));
@@ -43,7 +43,7 @@ export const load: PageServerLoad = async (event) => {
 };
 export const actions: Actions = {
 	createArea: async (event) => {
-		//const admin = requireAdmin(event);
+		requireAdmin(event);
 
 		const data = await event.request.formData();
 		const user = event.locals.user;

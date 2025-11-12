@@ -1,37 +1,28 @@
 import { db } from '$lib/server/db';
 import { sector } from '$lib/server/db/schema';
-import { requireUser } from '$lib/server/auth/guards';
+import { requireAdmin, requireUser } from '$lib/server/auth/guards';
 import { error, fail, redirect } from '@sveltejs/kit';
 import { eq } from 'drizzle-orm';
 import type { Actions, PageServerLoad } from './$types';
 
-function assertOwnerOrAdmin(user: { id: string; role: string }, item: { createdBy: string }) {
-	if (user.role === 'admin') return;
-	if (item.createdBy !== user.id) throw error(403, 'No autorizado');
-}
-
 export const load: PageServerLoad = async (event) => {
-	const user = requireUser(event);
+	requireUser(event);
 	const { sectorId } = event.params;
 
 	const [item] = await db.select().from(sector).where(eq(sector.id, sectorId));
 	if (!item) throw error(404);
-
-	assertOwnerOrAdmin(user, item);
 
 	return { item, sectorId };
 };
 
 export const actions: Actions = {
 	save: async (event) => {
-		const user = requireUser(event);
+		requireAdmin(event);
 
 		const { sectorId } = event.params;
 
 		const [item] = await db.select().from(sector).where(eq(sector.id, sectorId));
 		if (!item) throw error(404);
-
-		assertOwnerOrAdmin(user, item);
 
 		const data = await event.request.formData();
 		const name = String(data.get('name') ?? '').trim();
@@ -51,13 +42,11 @@ export const actions: Actions = {
 	},
 
 	softDelete: async (event) => {
-		const u = requireUser(event);
+		requireAdmin(event);
 		const { sectorId } = event.params;
 
 		const [item] = await db.select().from(sector).where(eq(sector.id, sectorId));
 		if (!item) throw error(404);
-
-		assertOwnerOrAdmin(u, item);
 
 		await db.update(sector).set({ status: 'deleted' }).where(eq(sector.id, sectorId));
 		throw redirect(303, event.url.pathname);
