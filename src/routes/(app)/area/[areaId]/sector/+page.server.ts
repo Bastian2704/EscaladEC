@@ -1,5 +1,5 @@
 import { db } from '$lib/server/db';
-import { sector } from '$lib/server/db/schema';
+import { sector, area } from '$lib/server/db/schema';
 import { requireUser } from '$lib/server/auth/guards';
 import { requireAdmin } from '$lib/server/auth/guards';
 import { fail, redirect } from '@sveltejs/kit';
@@ -24,11 +24,13 @@ export const load: PageServerLoad = async (event) => {
 		.where(eq(sector.areaId, areaId))
 		.limit(PAGE_SIZE)
 		.offset(offset);
+	const areaInfo = await db.select().from(area).where(eq(area.id ,areaId) )
 
 	return {
 		items,
 		page,
-		status
+		status,
+		areaInfo,
 	};
 };
 
@@ -56,8 +58,8 @@ export const actions: Actions = {
 			status: 'active',
 			createdAt: new Date(),
 			updatedAt: new Date(),
-			createdBy: user.id,
-			updatedBy: user.id
+			createdBy: user?.id,
+			updatedBy: user?.id
 		} as any);
 
 		return { success: true, message: `Sector: ${name}, creado correctamente.` };
@@ -72,7 +74,7 @@ export const actions: Actions = {
 
 		await db
 			.update(sector)
-			.set({ status: Status.suspended, updatedAt: new Date(), updatedBy: user.id })
+			.set({ status: Status.suspended, updatedAt: new Date(), updatedBy: user?.id })
 			.where(eq(sector.id, id));
 
 		throw redirect(303, event.url.pathname);
@@ -87,7 +89,7 @@ export const actions: Actions = {
 
 		await db
 			.update(sector)
-			.set({ status: Status.active, updatedAt: new Date(), updatedBy: user.id })
+			.set({ status: Status.active, updatedAt: new Date(), updatedBy: user?.id })
 			.where(eq(sector.id, id));
 
 		throw redirect(303, event.url.pathname);
@@ -106,7 +108,7 @@ export const actions: Actions = {
 				status: Status.deleted,
 				updatedAt: new Date(),
 				deletedAt: new Date(),
-				updatedBy: user.id
+				updatedBy: user?.id
 			})
 			.where(eq(sector.id, id));
 
@@ -122,7 +124,7 @@ export const actions: Actions = {
 
 		await db
 			.update(sector)
-			.set({ status: Status.active, updatedAt: new Date(), updatedBy: user.id })
+			.set({ status: Status.active, updatedAt: new Date(), updatedBy: user?.id })
 			.where(eq(sector.id, id));
 
 		throw redirect(303, event.url.pathname);
