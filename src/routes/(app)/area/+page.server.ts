@@ -77,8 +77,8 @@ export const actions: Actions = {
 			status: 'active',
 			createdAt: new Date(),
 			updatedAt: new Date(),
-			createdBy: user.id,
-			updatedBy: user.id
+			createdBy: user?.id,
+			updatedBy: user?.id
 		} as any);
 
 		return { success: true, message: `Area: ${name}, creado correctamente.` };
@@ -93,7 +93,7 @@ export const actions: Actions = {
 
 		await db
 			.update(area)
-			.set({ status: Status.suspended, updatedAt: new Date(), updatedBy: user.id })
+			.set({ status: Status.suspended, updatedAt: new Date(), updatedBy: user?.id })
 			.where(eq(area.id, id));
 		await lucia.invalidateUserSessions(id);
 		throw redirect(303, event.url.pathname);
@@ -108,7 +108,7 @@ export const actions: Actions = {
 
 		await db
 			.update(area)
-			.set({ status: Status.active, updatedAt: new Date(), updatedBy: user.id })
+			.set({ status: Status.active, updatedAt: new Date(), updatedBy: user?.id })
 			.where(eq(area.id, id));
 		throw redirect(303, event.url.pathname);
 	},
@@ -126,7 +126,7 @@ export const actions: Actions = {
 				status: Status.deleted,
 				updatedAt: new Date(),
 				deletedAt: new Date(),
-				updatedBy: user.id
+				updatedBy: user?.id
 			})
 			.where(eq(area.id, id));
 
@@ -142,7 +142,7 @@ export const actions: Actions = {
 
 		await db
 			.update(area)
-			.set({ status: Status.active, updatedAt: new Date(), updatedBy: user.id })
+			.set({ status: Status.active, updatedAt: new Date(), updatedBy: user?.id })
 			.where(eq(area.id, id));
 		throw redirect(303, event.url.pathname);
 	}
