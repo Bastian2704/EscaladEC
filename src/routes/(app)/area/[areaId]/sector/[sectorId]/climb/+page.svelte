@@ -140,7 +140,7 @@
 					{#each data.items as climb}
 						<tr
 							class="main__table-body"
-							on:click={() => (window.location.href = `climb/${climb.id}/edit`)}
+							on:click={() => (window.location.href = `climb/${climb.id}/grade`)}
 						>
 							<td class="main__table-td">{climb.name}</td>
 							<td class="main__table-td">{climb.category}</td>
