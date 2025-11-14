@@ -97,7 +97,7 @@
 					{#each data.items as area}
 						<tr
 							class="main__table-body"
-							on:click={() => (window.location.href = `/area/${area.id}/edit`)}
+							on:click={() => (window.location.href = `/area/${area.id}/sector`)}
 						>
 							<td class="main__table-td">{area.name}</td>
 							<td class="main__table-td">{area.province}</td>
