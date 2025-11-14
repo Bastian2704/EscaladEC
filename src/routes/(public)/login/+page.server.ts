@@ -1,4 +1,4 @@
-import type { Actions } from './$types';
+import type { PageServerLoad, Actions } from './$types';
 import { lucia } from '$lib/server/auth/lucia';
 import { db } from '$lib/server/db';
 import { users } from '$lib/server/db/schema';
@@ -6,8 +6,21 @@ import { verify } from 'argon2';
 import { redirect, fail } from '@sveltejs/kit';
 import { eq } from 'drizzle-orm';
 
+export const load: PageServerLoad = async ({ locals }) => {
+	if (locals.user) {
+		throw redirect(303, '/dashboard');
+	}
+
+	return {};
+};
+
 export const actions: Actions = {
-	default: async ({ request, cookies }) => {
+	default: async ({ request, cookies, locals }) => {
+		if (locals.user) {
+			return fail(400, {
+				message: 'Ya tienes una sesión iniciada.'
+			});
+		}
 		const data = await request.formData();
 		const email = String(data.get('email') ?? '')
 			.toLowerCase()
