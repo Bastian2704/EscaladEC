@@ -1,8 +1,8 @@
 <script lang="ts">
 	import { type Status } from '$lib/contants/constants';
-
 	import logo from '$lib/assets/smallLogo.png';
 	import fullLogo from '$lib/assets/aeLogo.png';
+	import { page } from '$app/state';
 	import '$lib/styles/sector.css';
 
 	export let data: {
@@ -31,7 +31,6 @@
 			deletedAt?: string | null;
 		}[];
 		page: number;
-		role: string;
 		status: string;
 	};
 
@@ -80,9 +79,11 @@
 					<a class="main__title button" href="/area">←</a>
 					<h1 class="main__title">Sectores</h1>
 				</section>
-				<button class="main__title-create" on:click={toggleForm}>
-					{showForm ? '×' : '+'}
-				</button>
+				{#if page.data.role == 'admin'}
+					<button class="main__title-create" on:click={toggleForm}>
+						{showForm ? '×' : '+'}
+					</button>
+				{/if}
 			</section>
 			<!-- Check-->
 
@@ -120,40 +121,39 @@
 							<td class="main__table-td">{sector.name}</td>
 							<td class="main__table-td">{sector.orientation}</td>
 							<td class="main__table-td">{sector.description}</td>
+							{#if page.data.role == 'admin'}
+							<td>
+								
+									<a href="/area/{sector.areaId}/sector/{sector.id}/edit" on:click|stopPropagation>editar</a>
+							</td>
+							<td on:click|stopPropagation>
+
+								{#if sector.status === 'active'}
+									<form method="POST" class="ml-2 inline">
+										<input type="hidden" name="id" value={sector.id} />
+										<button formaction="?/suspend" class="border px-2 py-1">Suspender</button>
+									</form>
+								{:else if sector.status === 'suspended'}
+									<form method="POST" class="ml-2 inline">
+										<input type="hidden" name="id" value={sector.id} />
+										<button formaction="?/resume" class="border px-2 py-1">Reactivar</button>
+									</form>
+								{/if}
+
+								{#if sector.status !== 'deleted'}
+									<form method="POST" class="ml-2 inline">
+										<input type="hidden" name="id" value={sector.id} />
+										<button formaction="?/softDelete" class="border px-2 py-1">Borrar</button>
+									</form>
+								{:else}
+									<form method="POST" class="ml-2 inline">
+										<input type="hidden" name="id" value={sector.id} />
+										<button formaction="?/restore" class="border px-2 py-1">Restaurar</button>
+									</form>
+								{/if}
+							</td>
+							{/if}
 							<td class="main__table-td-arrow">→</td>
-							<!--TODO: Show only if admin
-
-				<td class="main__table-td">
-					<a href={`/area/${sector.areaId}/sector/${sector.id}/edit`}> Editar </a>
-					<form method="POST" class="inline">
-						<input type="hidden" name="id" value={sector.id} />
-					</form>
-
-					{#if sector.status === 'active'}
-						<form method="POST" class="ml-2 inline">
-							<input type="hidden" name="id" value={sector.id} />
-							<button formaction="?/suspend" class="border px-2 py-1">Suspender</button>
-						</form>
-					{:else if sector.status === 'suspended'}
-						<form method="POST" class="ml-2 inline">
-							<input type="hidden" name="id" value={sector.id} />
-							<button formaction="?/resume" class="border px-2 py-1">Reactivar</button>
-						</form>
-					{/if}
-
-					{#if sector.status !== 'deleted'}
-						<form method="POST" class="ml-2 inline">
-							<input type="hidden" name="id" value={sector.id} />
-							<button formaction="?/softDelete" class="border px-2 py-1">Borrar</button>
-						</form>
-					{:else}
-						<form method="POST" class="ml-2 inline">
-							<input type="hidden" name="id" value={sector.id} />
-							<button formaction="?/restore" class="border px-2 py-1">Restaurar</button>
-						</form>
-					{/if}
-				</td>
-				-->
 						</tr>
 					{/each}
 				</tbody>
