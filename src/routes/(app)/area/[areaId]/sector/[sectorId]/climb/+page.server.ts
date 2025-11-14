@@ -1,5 +1,5 @@
 import { db } from '$lib/server/db';
-import { climb } from '$lib/server/db/schema';
+import { climb, sector } from '$lib/server/db/schema';
 import { requireUser } from '$lib/server/auth/guards';
 import { requireAdmin } from '$lib/server/auth/guards';
 import {
@@ -32,6 +32,7 @@ export const load: PageServerLoad = async (event) => {
 		.where(eq(climb.sectorId, sectorId))
 		.limit(PAGE_SIZE)
 		.offset(offset);
+	const sectorInfo = await db.select().from(sector).where(eq(sector.id, sectorId));
 
 	return {
 		items,
@@ -39,6 +40,7 @@ export const load: PageServerLoad = async (event) => {
 		status,
 		sectorId,
 		areaId,
+		sectorInfo,
 		categoryGroups: Object.keys(categoryMap),
 		categoryOptions: categoryMap
 	};
@@ -71,7 +73,7 @@ export const actions: Actions = {
 
 		await db.insert(climb).values({
 			sectorId,
-			userId: user.id,
+			userId: user?.id,
 			name,
 			category: categoryGroup,
 			climbType,
@@ -79,8 +81,8 @@ export const actions: Actions = {
 			status: 'active',
 			createdAt: new Date(),
 			updatedAt: new Date(),
-			createdBy: user.id,
-			updatedBy: user.id
+			createdBy: user?.id,
+			updatedBy: user?.id
 		} as any);
 
 		return { success: true, message: `Climb: ${name}, creado correctamente.` };
@@ -95,7 +97,7 @@ export const actions: Actions = {
 
 		await db
 			.update(climb)
-			.set({ status: Status.suspended, updatedAt: new Date(), updatedBy: user.id })
+			.set({ status: Status.suspended, updatedAt: new Date(), updatedBy: user?.id })
 			.where(eq(climb.id, id));
 
 		throw redirect(303, event.url.pathname);
@@ -110,7 +112,7 @@ export const actions: Actions = {
 
 		await db
 			.update(climb)
-			.set({ status: Status.active, updatedAt: new Date(), updatedBy: user.id })
+			.set({ status: Status.active, updatedAt: new Date(), updatedBy: user?.id })
 			.where(eq(climb.id, id));
 
 		throw redirect(303, event.url.pathname);
@@ -128,7 +130,7 @@ export const actions: Actions = {
 			.set({
 				status: Status.deleted,
 				updatedAt: new Date(),
-				updatedBy: user.id,
+				updatedBy: user?.id,
 				deletedAt: new Date()
 			})
 			.where(eq(climb.id, id));
@@ -145,7 +147,7 @@ export const actions: Actions = {
 
 		await db
 			.update(climb)
-			.set({ status: Status.active, updatedAt: new Date(), updatedBy: user.id })
+			.set({ status: Status.active, updatedAt: new Date(), updatedBy: user?.id })
 			.where(eq(climb.id, id));
 
 		throw redirect(303, event.url.pathname);

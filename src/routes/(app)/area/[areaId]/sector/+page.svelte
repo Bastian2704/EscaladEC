@@ -76,7 +76,10 @@
 				<p class="main__area-info">{data.areaInfo[0].province}-{data.areaInfo[0].city}</p>
 			</section>
 			<section class="main__title-container">
-				<h1 class="main-title">Sectores</h1>
+				<section class="main__title-left-container">
+					<a class="main__title button" href="/area">←</a>
+					<h1 class="main__title">Sectores</h1>
+				</section>
 				<button class="main__title-create" on:click={toggleForm}>
 					{showForm ? '×' : '+'}
 				</button>
@@ -112,12 +115,12 @@
 						<tr
 							class="main__table-body"
 							on:click={() =>
-								(window.location.href = `/area/${sector.areaId}/sector/${sector.id}/edit`)}
+								(window.location.href = `/area/${sector.areaId}/sector/${sector.id}/climb`)}
 						>
 							<td class="main__table-td">{sector.name}</td>
 							<td class="main__table-td">{sector.orientation}</td>
 							<td class="main__table-td">{sector.description}</td>
-							<td>→</td>
+							<td class="main__table-td-arrow">→</td>
 							<!--TODO: Show only if admin
 
 				<td class="main__table-td">
