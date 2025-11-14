@@ -1,5 +1,5 @@
 import { db } from '$lib/server/db';
-import { grade } from '$lib/server/db/schema';
+import { grade, climb } from '$lib/server/db/schema';
 import { requireUser } from '$lib/server/auth/guards';
 import { requireAdmin } from '$lib/server/auth/guards';
 import { fail, redirect } from '@sveltejs/kit';
@@ -26,6 +26,11 @@ export const load: PageServerLoad = async (event) => {
 		.limit(PAGE_SIZE)
 		.offset(offset);
 
+	const climbInfo = await db
+		.select()
+		.from(climb)
+		.where(eq(climb.id, climbId));
+
 	return {
 		items,
 		page,
@@ -34,7 +39,8 @@ export const load: PageServerLoad = async (event) => {
 		areaId,
 		climbId,
 		systems: Object.keys(gradeSystem),
-		gradeOptions: gradeSystem
+		gradeOptions: gradeSystem,
+		climbInfo,
 	};
 };
 export const actions: Actions = {
@@ -65,7 +71,7 @@ export const actions: Actions = {
 
 		await db.insert(grade).values({
 			climbId,
-			userId: user.id,
+			userId: user?.id,
 			gradeSystem,
 			value,
 			difficultyLevel,
@@ -73,8 +79,8 @@ export const actions: Actions = {
 			status: 'active',
 			createdAt: new Date(),
 			updatedAt: new Date(),
-			publishedBy: user.id,
-			updatedBy: user.id
+			publishedBy: user?.id,
+			updatedBy: user?.id
 		} as any);
 
 		return { success: true, message: `Grado creado correctamente.` };
@@ -89,7 +95,7 @@ export const actions: Actions = {
 
 		await db
 			.update(grade)
-			.set({ status: 'suspended', updatedAt: new Date(), updatedBy: user.id })
+			.set({ status: 'suspended', updatedAt: new Date(), updatedBy: user?.id })
 			.where(eq(grade.id, id));
 
 		throw redirect(303, event.url.pathname);
@@ -104,7 +110,7 @@ export const actions: Actions = {
 
 		await db
 			.update(grade)
-			.set({ status: 'active', updatedAt: new Date(), updatedBy: user.id })
+			.set({ status: 'active', updatedAt: new Date(), updatedBy: user?.id })
 			.where(eq(grade.id, id));
 
 		throw redirect(303, event.url.pathname);
@@ -119,7 +125,7 @@ export const actions: Actions = {
 
 		await db
 			.update(grade)
-			.set({ status: 'deleted', updatedAt: new Date(), deletedAt: new Date(), updatedBy: user.id })
+			.set({ status: 'deleted', updatedAt: new Date(), deletedAt: new Date(), updatedBy: user?.id })
 			.where(eq(grade.id, id));
 
 		throw redirect(303, event.url.pathname);
@@ -134,7 +140,7 @@ export const actions: Actions = {
 
 		await db
 			.update(grade)
-			.set({ status: 'active', updatedAt: new Date(), updatedBy: user.id })
+			.set({ status: 'active', updatedAt: new Date(), updatedBy: user?.id })
 			.where(eq(grade.id, id));
 
 		throw redirect(303, event.url.pathname);
