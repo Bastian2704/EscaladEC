@@ -79,13 +79,22 @@
     font-size: 20px;
     color: #222;
     text-align: center;
-
 }
 
-.main-title {
+.main__title {
     font-weight: 600;
     font-size: 40px;
     color: #222;
+}
+
+.button {
+    margin-right: 20px;
+}
+
+.main__title-left-container {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
 }
 
 .main__title-container {
@@ -146,6 +155,12 @@
     border: none;
     vertical-align: middle;
     color: #333;
+}
+
+.main__table-td-arrow {
+    color: #333;
+    font-weight: 500;
+    font-size: 20px;
 }
 
 
