@@ -1,10 +1,9 @@
 <script lang="ts">
-	export let data: { user: { email: string; role: string } };
+	import { page } from '$app/state';
 </script>
 
 <h1>Dashboard</h1>
-<p>Sesión: {data.user.email} · Rol: {data.user.role}</p>
+<p>Sesión: {page.data.user.email} · Rol: {page.data.role}</p>
 <form method="POST" action="/logout"><button>Salir</button></form>
-{#if data.user.role == 'admin'}
-	<a href={`/area`}> Ver Áreas </a>
-{/if}
+
+<a href={`/area`}> Ver Áreas </a>
