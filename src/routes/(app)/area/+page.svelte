@@ -1,7 +1,8 @@
 <script lang="ts">
 	import { provinces, type Status } from '$lib/contants/constants';
 	import logo from '$lib/assets/smallLogo.png';
-	import fullLogo from '$lib/assets/aeLogo.png'
+	import fullLogo from '$lib/assets/aeLogo.png';
+	import { page } from '$app/state';
 	import '$lib/styles/area.css';
 
 	let messageVisible = false;
@@ -21,7 +22,6 @@
 			deletedAt?: string | null;
 		}>;
 		page: number;
-		role: string;
 		status: string;
 	};
 
@@ -61,9 +61,11 @@
 		<section class="main">
 			<section class="main__title-container">
 				<h1 class="main-title">Areas</h1>
-				<button class="main__title-create" on:click={toggleForm}>
-					{showForm ? '×' : '+'}
-				</button>
+				{#if page.data.role == 'admin'}
+					<button class="main__title-create" on:click={toggleForm}>
+						{showForm ? '×' : '+'}
+					</button>
+				{/if}
 			</section>
 			<!-- Check-->
 
@@ -88,9 +90,6 @@
 						<th class="main__table-item">Descripción</th>
 						<th class="main__table-item">Latitud</th>
 						<th class="main__table-item">Longitud</th>
-						<!--TODO: Show only if admin
-						<th class="main__table-item">Acciones</th>
-						-->
 					</tr>
 				</thead>
 				<tbody class="main__table-tbody">
@@ -105,21 +104,13 @@
 							<td class="main__table-td">{area.description}</td>
 							<td class="main__table-td">{area.latitude}</td>
 							<td class="main__table-td">{area.longitude}</td>
-							<td>→</td>
-							<!--TODO: Show only if admin
-
+							{#if page.data.role == 'admin'}
 							<td>
-								<a href={`/area/${area.id}/edit`}> Editar </a>
-								<form method="POST" class="inline">
-									<input type="hidden" name="id" value={area.id} />
-									<select name="role" class="border p-1">
-										{#each provinces as province}
-											<option value={province} selected={province === province}>{province}</option>
-										{/each}
-									</select> 
-									TODO: THIS AIN'T WORKING
-						<button formaction="?/setProvince" class="ml-1 border px-2 py-1">Guardar</button>
-								</form>
+								
+									<a href="/area/{area.id}/edit" on:click|stopPropagation>editar</a>
+							</td>
+							<td on:click|stopPropagation>
+								<!--TODO: Change CSS and not use TailWind-->
 
 								{#if area.status === 'active'}
 									<form method="POST" class="ml-2 inline">
@@ -145,7 +136,8 @@
 									</form>
 								{/if}
 							</td>
-													-->
+							{/if}
+							<td class="main__table-td-arrow">→</td>
 						</tr>
 					{/each}
 				</tbody>

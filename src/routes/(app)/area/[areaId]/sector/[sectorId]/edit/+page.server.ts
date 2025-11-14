@@ -1,12 +1,12 @@
 import { db } from '$lib/server/db';
 import { sector } from '$lib/server/db/schema';
-import { requireAdmin, requireUser } from '$lib/server/auth/guards';
+import { requireAdmin } from '$lib/server/auth/guards';
 import { error, fail, redirect } from '@sveltejs/kit';
 import { eq } from 'drizzle-orm';
 import type { Actions, PageServerLoad } from './$types';
 
 export const load: PageServerLoad = async (event) => {
-	requireUser(event);
+	requireAdmin(event);
 	const { sectorId } = event.params;
 
 	const [item] = await db.select().from(sector).where(eq(sector.id, sectorId));

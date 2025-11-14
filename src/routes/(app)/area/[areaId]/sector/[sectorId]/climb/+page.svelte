@@ -1,8 +1,8 @@
 <script lang="ts">
 	import { type Status } from '$lib/contants/constants';
-
 	import logo from '$lib/assets/smallLogo.png';
 	import fullLogo from '$lib/assets/aeLogo.png';
+	import { page } from '$app/state';
 	import '$lib/styles/climb.css';
 
 	export let data: {
@@ -30,7 +30,6 @@
 			deletedAt?: string | null;
 		}[];
 		page: number;
-		role: string;
 		status: string;
 		categoryGroups: string[];
 		categoryOptions: Record<string, string[]>;
@@ -103,9 +102,11 @@
 					<a class="main__title button" href="/area/{data.sectorInfo[0].areaId}/sector">←</a>
 					<h1 class="main__title">Climb</h1>
 				</section>
-				<button class="main__title-create" on:click={toggleForm}>
-					{showForm ? '×' : '+'}
-				</button>
+				{#if page.data.role == 'admin'}
+					<button class="main__title-create" on:click={toggleForm}>
+						{showForm ? '×' : '+'}
+					</button>
+				{/if}
 			</section>
 			<!-- Check-->
 
@@ -146,40 +147,39 @@
 							<td class="main__table-td">{climb.category}</td>
 							<td class="main__table-td">{climb.climbType}</td>
 							<td class="main__table-td">{climb.requiredEquipment}</td>
+							{#if page.data.role == 'admin'}
+							<td>
+								
+									<a href="climb/{climb.id}/edit" on:click|stopPropagation>editar</a>
+							</td>
+							<td on:click|stopPropagation>
+
+								{#if climb.status === 'active'}
+									<form method="POST" class="ml-2 inline">
+										<input type="hidden" name="id" value={climb.id} />
+										<button formaction="?/suspend" class="border px-2 py-1">Suspender</button>
+									</form>
+								{:else if climb.status === 'suspended'}
+									<form method="POST" class="ml-2 inline">
+										<input type="hidden" name="id" value={climb.id} />
+										<button formaction="?/resume" class="border px-2 py-1">Reactivar</button>
+									</form>
+								{/if}
+
+								{#if climb.status !== 'deleted'}
+									<form method="POST" class="ml-2 inline">
+										<input type="hidden" name="id" value={climb.id} />
+										<button formaction="?/softDelete" class="border px-2 py-1">Borrar</button>
+									</form>
+								{:else}
+									<form method="POST" class="ml-2 inline">
+										<input type="hidden" name="id" value={climb.id} />
+										<button formaction="?/restore" class="border px-2 py-1">Restaurar</button>
+									</form>
+								{/if}
+							</td>
+							{/if}
 							<td class="main__table-td-arrow">→</td>
-							<!--TODO: Show only if admin
-				<td class="main__table-td">
-
-					<a href={`climb/${climb.id}/edit`}> Editar </a>
-					<form method="POST" class="inline">
-						<input type="hidden" name="id" value={climb.id} />
-					</form>
-
-					{#if climb.status === 'active'}
-						<form method="POST" class="ml-2 inline">
-							<input type="hidden" name="id" value={climb.id} />
-							<button formaction="?/suspend" class="border px-2 py-1">Suspender</button>
-						</form>
-					{:else if climb.status === 'suspended'}
-						<form method="POST" class="ml-2 inline">
-							<input type="hidden" name="id" value={climb.id} />
-							<button formaction="?/resume" class="border px-2 py-1">Reactivar</button>
-						</form>
-					{/if}
-
-					{#if climb.status !== 'deleted'}
-						<form method="POST" class="ml-2 inline">
-							<input type="hidden" name="id" value={climb.id} />
-							<button formaction="?/softDelete" class="border px-2 py-1">Borrar</button>
-						</form>
-					{:else}
-						<form method="POST" class="ml-2 inline">
-							<input type="hidden" name="id" value={climb.id} />
-							<button formaction="?/restore" class="border px-2 py-1">Restaurar</button>
-						</form>
-					{/if}
-				</td>
-								-->
 						</tr>
 					{/each}
 				</tbody>

@@ -1,7 +1,6 @@
 import { db } from '$lib/server/db';
 import { climb, sector } from '$lib/server/db/schema';
-import { requireUser } from '$lib/server/auth/guards';
-import { requireAdmin } from '$lib/server/auth/guards';
+import { requireUser, requireAdmin } from '$lib/server/auth/guards';
 import {
 	category as categoryMap,
 	isValidCategoryGroup,

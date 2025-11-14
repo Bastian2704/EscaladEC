@@ -1,7 +1,6 @@
 import { db } from '$lib/server/db';
 import { sector, area } from '$lib/server/db/schema';
-import { requireUser } from '$lib/server/auth/guards';
-import { requireAdmin } from '$lib/server/auth/guards';
+import { requireUser, requireAdmin } from '$lib/server/auth/guards';
 import { fail, redirect } from '@sveltejs/kit';
 import { eq } from 'drizzle-orm';
 import type { Actions, PageServerLoad } from './$types';
@@ -24,13 +23,13 @@ export const load: PageServerLoad = async (event) => {
 		.where(eq(sector.areaId, areaId))
 		.limit(PAGE_SIZE)
 		.offset(offset);
-	const areaInfo = await db.select().from(area).where(eq(area.id ,areaId) )
+	const areaInfo = await db.select().from(area).where(eq(area.id, areaId));
 
 	return {
 		items,
 		page,
 		status,
-		areaInfo,
+		areaInfo
 	};
 };
 

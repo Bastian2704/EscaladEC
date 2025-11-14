@@ -1,7 +1,6 @@
 import { db } from '$lib/server/db';
 import { grade, climb } from '$lib/server/db/schema';
-import { requireUser } from '$lib/server/auth/guards';
-import { requireAdmin } from '$lib/server/auth/guards';
+import { requireUser, requireAdmin } from '$lib/server/auth/guards';
 import { fail, redirect } from '@sveltejs/kit';
 import { eq, and } from 'drizzle-orm';
 import { gradeSystem, isValidSystem, isValidValue } from '$lib/contants/constants';
@@ -26,10 +25,7 @@ export const load: PageServerLoad = async (event) => {
 		.limit(PAGE_SIZE)
 		.offset(offset);
 
-	const climbInfo = await db
-		.select()
-		.from(climb)
-		.where(eq(climb.id, climbId));
+	const climbInfo = await db.select().from(climb).where(eq(climb.id, climbId));
 
 	return {
 		items,
@@ -40,7 +36,7 @@ export const load: PageServerLoad = async (event) => {
 		climbId,
 		systems: Object.keys(gradeSystem),
 		gradeOptions: gradeSystem,
-		climbInfo,
+		climbInfo
 	};
 };
 export const actions: Actions = {

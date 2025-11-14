@@ -2,6 +2,7 @@
 	import { type Status } from '$lib/contants/constants';
 	import logo from '$lib/assets/smallLogo.png';
 	import fullLogo from '$lib/assets/aeLogo.png';
+	import { page } from '$app/state';
 	import '$lib/styles/sector.css';
 
 	export let data: {
@@ -32,7 +33,6 @@
 		areaId: string;
 		sectorId: string;
 		page: number;
-		role: string;
 		status: string;
 		systems?: string[];
 		gradeOptions?: Record<string, string[]>;
@@ -157,36 +157,35 @@
 							<td class="main__table-td">{grade.value}</td>
 							<td class="main__table-td">{grade.accomplished ? '✅' : '❌'}</td>
 							<td class="main__table-td">{grade.difficultyLevel}</td>
-							<td class="main__table-td-arrow">→</td>
-							<!--TODO: Show only if admin
+							{#if page.data.role == 'admin'}
+							<td on:click|stopPropagation>
 
-				<td class="main__table-td">
-					<a href={`grade/${grade.id}/edit`}>Editar</a>
-					{#if grade.status === 'active'}
-						<form method="POST" class="ml-2 inline">
-							<input type="hidden" name="id" value={g.id} />
-							<button formaction="?/suspend" class="border px-2 py-1">Suspender</button>
-						</form>
-					{:else if grade.status === 'suspended'}
-						<form method="POST" class="ml-2 inline">
-							<input type="hidden" name="id" value={g.id} />
-							<button formaction="?/resume" class="border px-2 py-1">Reactivar</button>
-						</form>
-					{/if}
+								{#if grade.status === 'active'}
+									<form method="POST" class="ml-2 inline">
+										<input type="hidden" name="id" value={grade.id} />
+										<button formaction="?/suspend" class="border px-2 py-1">Suspender</button>
+									</form>
+								{:else if grade.status === 'suspended'}
+									<form method="POST" class="ml-2 inline">
+										<input type="hidden" name="id" value={grade.id} />
+										<button formaction="?/resume" class="border px-2 py-1">Reactivar</button>
+									</form>
+								{/if}
 
-					{#if g.status !== 'deleted'}
-						<form method="POST" class="ml-2 inline">
-							<input type="hidden" name="id" value={g.id} />
-							<button formaction="?/softDelete" class="border px-2 py-1">Borrar</button>
-						</form>
-					{:else}
-						<form method="POST" class="ml-2 inline">
-							<input type="hidden" name="id" value={g.id} />
-							<button formaction="?/restore" class="border px-2 py-1">Restaurar</button>
-						</form>
-					{/if}
-				</td>
-			-->
+								{#if grade.status !== 'deleted'}
+									<form method="POST" class="ml-2 inline">
+										<input type="hidden" name="id" value={grade.id} />
+										<button formaction="?/softDelete" class="border px-2 py-1">Borrar</button>
+									</form>
+								{:else}
+									<form method="POST" class="ml-2 inline">
+										<input type="hidden" name="id" value={grade.id} />
+										<button formaction="?/restore" class="border px-2 py-1">Restaurar</button>
+									</form>
+								{/if}
+							</td>
+							{/if}
+							<td class="main__table-td-arrow">Editar →</td>
 						</tr>
 					{/each}
 				</tbody>
