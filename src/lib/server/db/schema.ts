@@ -5,7 +5,9 @@ export const users = pgTable('users', {
 	id: uuid('id').primaryKey().defaultRandom(),
 	email: text('email').notNull().unique(),
 	username: text('username').notNull().unique(),
-	climbingLevel: text('climbingLevel'),
+	climbingLevelSport: integer('climbingLevelSport'),
+	climbingLevelNoRope: integer('climbingLevelNoRope'),
+	climbingLevelTrad: integer('climbingLevelTrad'),//TODO: Add to ER diagram
 	age: text('age').notNull(),
 	role: text('role').notNull().default('user'),
 	status: text('status').notNull().default('active'),
