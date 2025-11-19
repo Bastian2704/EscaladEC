@@ -41,16 +41,75 @@ export const category = {
 	'Escalada sin Cuerda': ['Boulder', 'Psicobloc (Deep Water Soloing)', 'Highball']
 } as const;
 
-export type CategoryGroup = keyof typeof category;
+export const categories = [
+	'Escalada Deportiva (Cuerda)',
+	'Escalada Sin Cuerda',
+	'Escalada Tradicional'
+];
+export type Category =
+	| 'Escalada Deportiva (Cuerda)'
+	| 'Escalada Sin Cuerda'
+	| 'Escalada Tradicional';
 
-export const isValidCategoryGroup = (g: string): g is CategoryGroup =>
-	Object.prototype.hasOwnProperty.call(category, g);
+export const carro1 = {
+	nombre: '',
+	placa: '',
+	numeroLlantas: 3
+};
 
-export const isValidClimbType = (g: string, t: string) =>
-	isValidCategoryGroup(g) && (category[g as CategoryGroup] as readonly string[]).includes(t);
+export const climbTypes = {
+	'Escalada Deportiva (Cuerda)': [
+		'Escala Deportiva',
+		'Vía de Varios Largos',
+		'Escalada en Gran Pared'
+	],
+	'Escalada Sin Cuerda': ['Boulder', 'Psicobloc', 'Highball'],
+	'Escalada Tradicional': ['Escala Tradicional', 'Vía de Varios Largos', 'Escalada en Gran Pared']
+};
 
-export const gradeSystem = {
-	'YDS (Yosemite Decimal System)': [
+export const climbGradeSystems = {
+	'Escalada Deportiva (Cuerda)': ['Francesa', 'YDS'],
+	'Escalada Sin Cuerda': ['VScale', 'Fontainebleau'],
+	'Escalada Tradicional': ['British']
+};
+
+export type GradeSystems = 'Francesa' | 'YDS' | 'VScale' | 'Fontainebleau' | 'British';
+
+export const gradeSystemsValues = {
+	Francesa: [
+		'2',
+		'3',
+		'4a',
+		'4b',
+		'4c',
+		'5a',
+		'5b',
+		'5c',
+		'6a',
+		'6a+',
+		'6b',
+		'6b+',
+		'6c',
+		'6c+',
+		'7a',
+		'7a+',
+		'7b',
+		'7b+',
+		'7c',
+		'7c+',
+		'8a',
+		'8a+',
+		'8b',
+		'8b+',
+		'8c',
+		'8c+',
+		'9a',
+		'9a+',
+		'9b',
+		'9b+',
+		'9c'
+	],
+	YDS: [
 		'5.0',
 		'5.1',
 		'5.2',
@@ -86,59 +145,29 @@ export const gradeSystem = {
 		'5.15c',
 		'5.15d'
 	],
-	Francesa: [
-		'2',
-		'3',
-		'4a',
-		'4b',
-		'4c',
-		'5a',
-		'5b',
-		'5c',
-		'6a',
-		'6a+',
-		'6b',
-		'6b+',
-		'6c',
-		'6c+',
-		'7a',
-		'7a+',
-		'7b',
-		'7b+',
-		'7c',
-		'7c+',
-		'8a',
-		'8a+',
-		'8b',
-		'8b+',
-		'8c',
-		'8c+',
-		'9a',
-		'9a+',
-		'9b',
-		'9b+',
-		'9c'
-	],
-	'British (E-grade)': [
-		'Mod',
-		'Diff',
-		'VDiff',
-		'HVD',
-		'Sev',
-		'HS',
-		'VS',
-		'HVS',
-		'E1 5a',
-		'E2 5b',
-		'E3 5c',
-		'E4 6a',
-		'E5 6b',
-		'E6 6b',
-		'E7 6c',
-		'E8 6c',
-		'E9 7a',
-		'E10 7b',
-		'E11 7c'
+	// V-Scale (Boulder)
+	VScale: [
+		'VB',
+		'V0-',
+		'V0',
+		'V0+',
+		'V1',
+		'V2',
+		'V3',
+		'V4',
+		'V5',
+		'V6',
+		'V7',
+		'V8',
+		'V9',
+		'V10',
+		'V11',
+		'V12',
+		'V13',
+		'V14',
+		'V15',
+		'V16',
+		'V17'
 	],
 	// Fontainebleau (Boulder)
 	Fontainebleau: [
@@ -167,36 +196,55 @@ export const gradeSystem = {
 		'8C+',
 		'9A'
 	],
-	// V-Scale (Boulder)
-	VScale: [
-		'VB',
-		'V0-',
-		'V0',
-		'V0+',
-		'V1',
-		'V2',
-		'V3',
-		'V4',
-		'V5',
-		'V6',
-		'V7',
-		'V8',
-		'V9',
-		'V10',
-		'V11',
-		'V12',
-		'V13',
-		'V14',
-		'V15',
-		'V16',
-		'V17'
+
+	British: [
+		'Mod',
+		'Diff',
+		'VDiff',
+		'HVD',
+		'Sev',
+		'HS',
+		'VS',
+		'HVS',
+		'E1 5a',
+		'E2 5b',
+		'E3 5c',
+		'E4 6a',
+		'E5 6b',
+		'E6 6b',
+		'E7 6c',
+		'E8 6c',
+		'E9 7a',
+		'E10 7b',
+		'E11 7c'
 	]
-} as const;
+};
 
-export type GradeSystemKey = keyof typeof gradeSystem;
+export const isValidCategory = (formCategory: string) => categories.includes(formCategory);
 
-export const isValidSystem = (s: string): s is GradeSystemKey =>
-	Object.keys(gradeSystem).includes(s);
+export const isValidType = (formCategory: string, formClimbType: string) => {
+	if (!isValidCategory(formCategory)) {
+		return false;
+	}
 
-export const isValidValue = (system: GradeSystemKey, v: string) =>
-	(gradeSystem[system] as readonly string[]).includes(v);
+	return climbTypes[formCategory as Category].includes(formClimbType);
+};
+
+export const isValidGradeSystem = (climbCategory: string, formGradeSystem: string) => {
+	if (!isValidCategory(climbCategory)) {
+		return false;
+	}
+
+	return climbGradeSystems[climbCategory as Category].includes(formGradeSystem);
+};
+export const isValidGradeSystemValue = (
+	climbCategory: string,
+	formGradeSystem: string,
+	gradeSystemValue: string
+) => {
+	if (!isValidGradeSystem(climbCategory, formGradeSystem)) {
+		return false;
+	}
+
+	return gradeSystemsValues[formGradeSystem as GradeSystems].includes(gradeSystemValue);
+};
