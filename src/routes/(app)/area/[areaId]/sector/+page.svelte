@@ -122,36 +122,36 @@
 							<td class="main__table-td">{sector.orientation}</td>
 							<td class="main__table-td">{sector.description}</td>
 							{#if page.data.role == 'admin'}
-							<td>
-								
-									<a href="/area/{sector.areaId}/sector/{sector.id}/edit" on:click|stopPropagation>editar</a>
-							</td>
-							<td on:click|stopPropagation>
+								<td>
+									<a href="/area/{sector.areaId}/sector/{sector.id}/edit" on:click|stopPropagation
+										>editar</a
+									>
+								</td>
+								<td on:click|stopPropagation>
+									{#if sector.status === 'active'}
+										<form method="POST" class="ml-2 inline">
+											<input type="hidden" name="id" value={sector.id} />
+											<button formaction="?/suspend" class="border px-2 py-1">Suspender</button>
+										</form>
+									{:else if sector.status === 'suspended'}
+										<form method="POST" class="ml-2 inline">
+											<input type="hidden" name="id" value={sector.id} />
+											<button formaction="?/resume" class="border px-2 py-1">Reactivar</button>
+										</form>
+									{/if}
 
-								{#if sector.status === 'active'}
-									<form method="POST" class="ml-2 inline">
-										<input type="hidden" name="id" value={sector.id} />
-										<button formaction="?/suspend" class="border px-2 py-1">Suspender</button>
-									</form>
-								{:else if sector.status === 'suspended'}
-									<form method="POST" class="ml-2 inline">
-										<input type="hidden" name="id" value={sector.id} />
-										<button formaction="?/resume" class="border px-2 py-1">Reactivar</button>
-									</form>
-								{/if}
-
-								{#if sector.status !== 'deleted'}
-									<form method="POST" class="ml-2 inline">
-										<input type="hidden" name="id" value={sector.id} />
-										<button formaction="?/softDelete" class="border px-2 py-1">Borrar</button>
-									</form>
-								{:else}
-									<form method="POST" class="ml-2 inline">
-										<input type="hidden" name="id" value={sector.id} />
-										<button formaction="?/restore" class="border px-2 py-1">Restaurar</button>
-									</form>
-								{/if}
-							</td>
+									{#if sector.status !== 'deleted'}
+										<form method="POST" class="ml-2 inline">
+											<input type="hidden" name="id" value={sector.id} />
+											<button formaction="?/softDelete" class="border px-2 py-1">Borrar</button>
+										</form>
+									{:else}
+										<form method="POST" class="ml-2 inline">
+											<input type="hidden" name="id" value={sector.id} />
+											<button formaction="?/restore" class="border px-2 py-1">Restaurar</button>
+										</form>
+									{/if}
+								</td>
 							{/if}
 							<td class="main__table-td-arrow">→</td>
 						</tr>
