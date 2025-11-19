@@ -3,8 +3,8 @@ import { climb, sector } from '$lib/server/db/schema';
 import { requireUser, requireAdmin } from '$lib/server/auth/guards';
 import {
 	category as categoryMap,
-	isValidCategoryGroup,
-	isValidClimbType,
+	isValidCategory,
+	isValidType,
 	Status
 } from '$lib/contants/constants';
 import { fail, redirect } from '@sveltejs/kit';
@@ -60,13 +60,12 @@ export const actions: Actions = {
 				message: 'Nombre del Climb, Categoria, Tipo de Escalada Y Equipo Requerido son Obligatorias'
 			});
 		}
-		if (!name || !categoryGroup || !climbType || !requiredEquipment) {
-			return fail(400, { message: 'Nombre, Categoría, Tipo y Equipo Requerido son obligatorios.' });
-		}
-		if (!isValidCategoryGroup(categoryGroup)) {
+
+		if (!isValidCategory(categoryGroup)) {
+			console.log(categoryGroup);
 			return fail(400, { message: 'Categoría inválida.' });
 		}
-		if (!isValidClimbType(categoryGroup, climbType)) {
+		if (!isValidType(categoryGroup, climbType)) {
 			return fail(400, { message: 'El tipo no corresponde a la categoría seleccionada.' });
 		}
 

@@ -3,8 +3,8 @@ import { grade, climb } from '$lib/server/db/schema';
 import { requireUser, requireAdmin } from '$lib/server/auth/guards';
 import { fail, redirect } from '@sveltejs/kit';
 import { eq, and } from 'drizzle-orm';
-import { gradeSystem, isValidSystem, isValidValue } from '$lib/contants/constants';
 import type { Actions, PageServerLoad } from './$types';
+import { isValidGradeSystem, isValidGradeSystemValue } from '$lib/contants/constants';
 
 const PAGE_SIZE = 10;
 
@@ -34,8 +34,6 @@ export const load: PageServerLoad = async (event) => {
 		sectorId,
 		areaId,
 		climbId,
-		systems: Object.keys(gradeSystem),
-		gradeOptions: gradeSystem,
 		climbInfo
 	};
 };
@@ -49,16 +47,17 @@ export const actions: Actions = {
 		const value = String(data.get('value') ?? '').trim();
 		const difficultyLevel = Number(data.get('difficultyLevel') ?? '');
 		const accomplished = Boolean(data.get('accomplished') ?? '');
+		const climbCategory = String(data.get('climbCategory') ?? '');
 
 		if (!gradeSystem || !value || !difficultyLevel) {
 			return fail(400, {
 				message: 'Sistema de Grado, Valor y Dificultad Percibida son Obligatorias'
 			});
 		}
-		if (!isValidSystem(gradeSystem)) {
+		if (!isValidGradeSystem(climbCategory, gradeSystem)) {
 			return fail(400, { message: 'Sistema de grado inválido.' });
 		}
-		if (!isValidValue(gradeSystem, value)) {
+		if (!isValidGradeSystemValue(climbCategory, gradeSystem, value)) {
 			return fail(400, { message: 'Valor de grado no coincide con el sistema seleccionado.' });
 		}
 		if (!Number.isFinite(difficultyLevel) || difficultyLevel < 1 || difficultyLevel > 10) {
