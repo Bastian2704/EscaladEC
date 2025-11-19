@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { type Status } from '$lib/contants/constants';
+	import { categories, climbTypes, type Category, type Status } from '$lib/contants/constants';
 	import logo from '$lib/assets/smallLogo.png';
 	import fullLogo from '$lib/assets/aeLogo.png';
 	import { page } from '$app/state';
@@ -49,25 +49,14 @@
 	}
 
 	// Form Status
-	const groups = data.categoryGroups ?? [];
-	const optionsMap = data.categoryOptions ?? {};
-
-	let selectedGroup: string = groups[0] ?? '';
-	$: typesForGroup = optionsMap[selectedGroup] ?? [];
-
-	let formCategory = selectedGroup;
-	let formClimbType = optionsMap[selectedGroup]?.[0] ?? '';
-
+	let selectedCategory = '';
+	let selectedType = '';
 	let name = '';
 	let requiredEquipment = '';
+	let climbTypeList: string[] = [];
 
-	function onGroupChange() {
-		selectedGroup = formCategory;
-		formClimbType = optionsMap[selectedGroup]?.[0] ?? '';
-	}
-
-	$: if (typesForGroup.length && !typesForGroup.includes(formClimbType)) {
-		formClimbType = typesForGroup[0] ?? '';
+	function onCategoryChange() {
+		climbTypeList = climbTypes[selectedCategory as Category] ?? [];
 	}
 
 	export let form: { message?: string; success?: boolean } | undefined;
@@ -148,36 +137,34 @@
 							<td class="main__table-td">{climb.climbType}</td>
 							<td class="main__table-td">{climb.requiredEquipment}</td>
 							{#if page.data.role == 'admin'}
-							<td>
-								
+								<td>
 									<a href="climb/{climb.id}/edit" on:click|stopPropagation>editar</a>
-							</td>
-							<td on:click|stopPropagation>
+								</td>
+								<td on:click|stopPropagation>
+									{#if climb.status === 'active'}
+										<form method="POST" class="ml-2 inline">
+											<input type="hidden" name="id" value={climb.id} />
+											<button formaction="?/suspend" class="border px-2 py-1">Suspender</button>
+										</form>
+									{:else if climb.status === 'suspended'}
+										<form method="POST" class="ml-2 inline">
+											<input type="hidden" name="id" value={climb.id} />
+											<button formaction="?/resume" class="border px-2 py-1">Reactivar</button>
+										</form>
+									{/if}
 
-								{#if climb.status === 'active'}
-									<form method="POST" class="ml-2 inline">
-										<input type="hidden" name="id" value={climb.id} />
-										<button formaction="?/suspend" class="border px-2 py-1">Suspender</button>
-									</form>
-								{:else if climb.status === 'suspended'}
-									<form method="POST" class="ml-2 inline">
-										<input type="hidden" name="id" value={climb.id} />
-										<button formaction="?/resume" class="border px-2 py-1">Reactivar</button>
-									</form>
-								{/if}
-
-								{#if climb.status !== 'deleted'}
-									<form method="POST" class="ml-2 inline">
-										<input type="hidden" name="id" value={climb.id} />
-										<button formaction="?/softDelete" class="border px-2 py-1">Borrar</button>
-									</form>
-								{:else}
-									<form method="POST" class="ml-2 inline">
-										<input type="hidden" name="id" value={climb.id} />
-										<button formaction="?/restore" class="border px-2 py-1">Restaurar</button>
-									</form>
-								{/if}
-							</td>
+									{#if climb.status !== 'deleted'}
+										<form method="POST" class="ml-2 inline">
+											<input type="hidden" name="id" value={climb.id} />
+											<button formaction="?/softDelete" class="border px-2 py-1">Borrar</button>
+										</form>
+									{:else}
+										<form method="POST" class="ml-2 inline">
+											<input type="hidden" name="id" value={climb.id} />
+											<button formaction="?/restore" class="border px-2 py-1">Restaurar</button>
+										</form>
+									{/if}
+								</td>
 							{/if}
 							<td class="main__table-td-arrow">→</td>
 						</tr>
@@ -195,44 +182,39 @@
 
 					<div>
 						<label for="category" class="mb-1 block">Categoría</label>
+
 						<select
 							id="category"
 							name="category"
-							bind:value={formCategory}
-							on:change={onGroupChange}
+							bind:value={selectedCategory}
+							on:change={onCategoryChange}
 							required
 							class="border px-2 py-1"
-							disabled={!groups.length}
 						>
-							{#each groups as g}
-								<option value={g}>{g}</option>
+							<option value="" disabled selected>Selecciona categoría</option>
+
+							{#each categories as category}
+								<option value={category}>{category}</option>
 							{/each}
 						</select>
 					</div>
-
 					<div>
 						<label for="climbType" class="mb-1 block">Tipo de Escalada</label>
-						{#if typesForGroup.length}
-							<select
-								id="climbType"
-								name="climbType"
-								bind:value={formClimbType}
-								required
-								class="border px-2 py-1"
-							>
-								{#each typesForGroup as t}
-									<option value={t}>{t}</option>
-								{/each}
-							</select>
-						{:else}
-							<input
-								id="climbType"
-								name="climbType"
-								value=""
-								class="border bg-gray-100 px-2 py-1"
-								disabled
-							/>
-						{/if}
+
+						<select
+							id="climbType"
+							name="climbType"
+							bind:value={selectedType}
+							disabled={!climbTypeList.length}
+							required
+							class="border px-2 py-1"
+						>
+							<option value="" disabled selected>Selecciona tipo</option>
+
+							{#each climbTypeList as type}
+								<option value={type}>{type}</option>
+							{/each}
+						</select>
 					</div>
 
 					<div>
