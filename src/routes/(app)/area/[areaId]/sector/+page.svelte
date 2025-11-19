@@ -61,8 +61,7 @@
 				<ul class="menu__list header-text">
 					<li><a class="menu__item" href="/dashboard">Menú Principal</a></li>
 					<li><a class="menu__item" href="/area">Áreas</a></li>
-					<!--Add Navigation to User Profile -->
-					<li><a class="menu__item" href="/area">Mi Perfil</a></li>
+					<li><a class="menu__item" href="/profile/{page.data.user.id}">Mi Perfil</a></li>
 				</ul>
 			</nav>
 		</header>
@@ -189,8 +188,8 @@
 		<section class="footer__links">
 			<a href="/dashboard">Inicio</a>
 			<a href="/area">Áreas</a>
+			<a href="/profile/{page.data.user.id}">Mi Perfil</a>
 			<!--TODO: Add This Pages-->
-			<a href="/profile">Mi Perfil</a>
 			<a href="/contact">Contacto</a>
 		</section>
 		<p class="footer__text">
