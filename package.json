@@ -20,7 +20,8 @@
 		"db:generate": "drizzle-kit generate",
 		"db:migrate": "drizzle-kit migrate",
 		"db:seed": "tsx src/lib/server/db/seed/seedScaledGrades.ts",
-		"db:studio": "drizzle-kit studio"
+		"db:studio": "drizzle-kit studio",
+		"postinstall": "pnpm run db:seed"
 	},
 	"devDependencies": {
 		"@eslint/compat": "^1.2.5",
