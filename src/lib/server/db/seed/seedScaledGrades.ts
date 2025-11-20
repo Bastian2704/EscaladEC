@@ -1,7 +1,8 @@
 import { db } from '$lib/server/db';
-import { climbingLevelNoRope, climbingLevelSport, climbingLevelTrad} from '$lib/server/db/schema';
+import { climbingLevelNoRope, climbingLevelSport, climbingLevelTrad } from '$lib/server/db/schema';
 
 export async function seedScaledGrades() {
+
   await db.insert(climbingLevelSport).values([
     { scaledValue: 1,  frenchValue: '1',       ydsValue: '2nd class' },
     { scaledValue: 2,  frenchValue: '2',       ydsValue: '3rd class' },
@@ -83,5 +84,5 @@ export async function seedScaledGrades() {
     { scaledValue: 18, british: 'E10 7b' },
     { scaledValue: 19, british: 'E11 7c' }
   ]);
-
 }
+seedScaledGrades();
