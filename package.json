@@ -15,11 +15,11 @@
 		"test:unit": "vitest",
 		"test": "npm run test:unit -- --run && npm run test:e2e",
 		"test:e2e": "playwright test",
-		"db:seed": "tsx src/lib/server/db/seed/seedScaledGrades.ts",
 		"db:start": "docker compose up",
 		"db:push": "drizzle-kit push",
 		"db:generate": "drizzle-kit generate",
 		"db:migrate": "drizzle-kit migrate",
+		"db:seed": "tsx src/lib/server/db/seed/seedScaledGrades.ts",
 		"db:studio": "drizzle-kit studio"
 	},
 	"devDependencies": {
@@ -61,6 +61,7 @@
 		"@lucia-auth/adapter-drizzle": "^1.1.0",
 		"@node-rs/argon2": "^2.0.2",
 		"argon2": "^0.44.0",
+		"dotenv": "^17.2.3",
 		"lucia": "^3.2.2",
 		"pg": "^8.16.3",
 		"postgres": "^3.4.5"
