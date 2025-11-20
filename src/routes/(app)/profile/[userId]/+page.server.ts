@@ -1,7 +1,7 @@
 import { db } from '$lib/server/db';
 import { users } from '$lib/server/db/schema';
 import { requireUser } from '$lib/server/auth/guards';
-import type { PageServerLoad, Actions } from '../[userId]/$types';
+import type { PageServerLoad } from './$types';
 import { eq } from 'drizzle-orm';
 
 export const load: PageServerLoad = async (event) => {
