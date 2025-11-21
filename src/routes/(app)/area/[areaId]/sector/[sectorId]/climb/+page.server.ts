@@ -13,8 +13,6 @@ import type { Actions, PageServerLoad } from './$types';
 
 const PAGE_SIZE = 10;
 
-//TODO Select logic
-
 export const load: PageServerLoad = async (event) => {
 	requireUser(event);
 

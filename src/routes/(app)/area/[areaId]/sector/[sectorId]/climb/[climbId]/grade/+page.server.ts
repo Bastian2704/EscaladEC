@@ -4,7 +4,7 @@ import { requireUser, requireAdmin } from '$lib/server/auth/guards';
 import { fail, redirect } from '@sveltejs/kit';
 import { eq, and } from 'drizzle-orm';
 import type { Actions, PageServerLoad } from './$types';
-import { isValidGradeSystem, isValidGradeSystemValue } from '$lib/contants/constants';
+import { isValidGradeSystem, isValidGradeSystemValue, Status } from '$lib/contants/constants';
 
 const PAGE_SIZE = 10;
 
@@ -21,7 +21,7 @@ export const load: PageServerLoad = async (event) => {
 	const items = await db
 		.select()
 		.from(grade)
-		.where(and(eq(grade.climbId, climbId), eq(grade.status, status)))
+		.where(and(eq(grade.climbId, climbId)))
 		.limit(PAGE_SIZE)
 		.offset(offset);
 
@@ -71,7 +71,7 @@ export const actions: Actions = {
 			value,
 			difficultyLevel,
 			accomplished,
-			status: 'active',
+			status: Status.active,
 			createdAt: new Date(),
 			updatedAt: new Date(),
 			publishedBy: user?.id,
@@ -90,7 +90,7 @@ export const actions: Actions = {
 
 		await db
 			.update(grade)
-			.set({ status: 'suspended', updatedAt: new Date(), updatedBy: user?.id })
+			.set({ status: Status.suspended, updatedAt: new Date(), updatedBy: user?.id })
 			.where(eq(grade.id, id));
 
 		throw redirect(303, event.url.pathname);
@@ -105,7 +105,7 @@ export const actions: Actions = {
 
 		await db
 			.update(grade)
-			.set({ status: 'active', updatedAt: new Date(), updatedBy: user?.id })
+			.set({ status: Status.active, updatedAt: new Date(), updatedBy: user?.id })
 			.where(eq(grade.id, id));
 
 		throw redirect(303, event.url.pathname);
@@ -120,7 +120,7 @@ export const actions: Actions = {
 
 		await db
 			.update(grade)
-			.set({ status: 'deleted', updatedAt: new Date(), deletedAt: new Date(), updatedBy: user?.id })
+			.set({ status: Status.deleted, updatedAt: new Date(), deletedAt: new Date(), updatedBy: user?.id })
 			.where(eq(grade.id, id));
 
 		throw redirect(303, event.url.pathname);
@@ -135,7 +135,7 @@ export const actions: Actions = {
 
 		await db
 			.update(grade)
-			.set({ status: 'active', updatedAt: new Date(), updatedBy: user?.id })
+			.set({ status: Status.active, updatedAt: new Date(), updatedBy: user?.id })
 			.where(eq(grade.id, id));
 
 		throw redirect(303, event.url.pathname);
