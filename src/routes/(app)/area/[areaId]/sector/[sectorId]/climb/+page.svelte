@@ -1,23 +1,33 @@
 <script lang="ts">
-	import { categories, climbTypes, type Category, type Status } from '$lib/contants/constants';
+	import {
+		categories,
+		climbGradeSystems,
+		climbTypes,
+		gradeSystemsValues,
+		type Category,
+		type Status,
+		type GradeSystems
+	} from '$lib/contants/constants';
 	import logo from '$lib/assets/smallLogo.png';
 	import fullLogo from '$lib/assets/aeLogo.png';
 	import { page } from '$app/state';
 	import '$lib/styles/climb.css';
 
 	export let data: {
-		items: Array<{
+		items: {
 			id: string;
 			sectorId: string;
 			name: string;
 			category: string;
 			climbType: string;
+			gradeSystem: string;
+			value: string;
 			requiredEquipment: string;
 			status: Status;
 			createdAt: string;
 			updatedAt?: string | null;
 			deletedAt?: string | null;
-		}>;
+		}[];
 		sectorInfo: {
 			id: string;
 			areaId: string;
@@ -31,8 +41,6 @@
 		}[];
 		page: number;
 		status: string;
-		categoryGroups: string[];
-		categoryOptions: Record<string, string[]>;
 	};
 	let messageVisible = false;
 
@@ -54,9 +62,21 @@
 	let name = '';
 	let requiredEquipment = '';
 	let climbTypeList: string[] = [];
+	let selectedGradeSystem = '';
+	let selectedGradeSystemValue = '';
+	let gradeSystemList: string[] = [];
+	let gradeSystemsValueList: string[] = [];
+	let accomplished = false;
+	let difficultyLevel: number;
 
 	function onCategoryChange() {
 		climbTypeList = climbTypes[selectedCategory as Category] ?? [];
+		gradeSystemList = climbGradeSystems[selectedCategory as Category] ?? [];
+		gradeSystemsValueList = [];
+	}
+
+	function onGradeSystemChange() {
+		gradeSystemsValueList = gradeSystemsValues[selectedGradeSystem as GradeSystems] ?? [];
 	}
 
 	export let form: { message?: string; success?: boolean } | undefined;
@@ -118,6 +138,8 @@
 						<th class="main__table-item">Nombre</th>
 						<th class="main__table-item">Categoría</th>
 						<th class="main__table-item">Tipo de Escalada</th>
+						<th class="main__table-item">Sistema</th>
+						<th class="main__table-item">Valor</th>
 						<th class="main__table-item">Equipo Requerido</th>
 
 						<!--TODO: Verify if this is neccessary
@@ -134,6 +156,8 @@
 							<td class="main__table-td">{climb.name}</td>
 							<td class="main__table-td">{climb.category}</td>
 							<td class="main__table-td">{climb.climbType}</td>
+							<td class="main__table-td">{climb.gradeSystem}</td>
+							<td class="main__table-td">{climb.value}</td>
 							<td class="main__table-td">{climb.requiredEquipment}</td>
 							{#if page.data.role == 'admin'}
 								<td>
@@ -212,6 +236,41 @@
 
 							{#each climbTypeList as type}
 								<option value={type}>{type}</option>
+							{/each}
+						</select>
+					</div>
+					<div>
+						<label for="gradeSystem" class="mb-1 block">Sistema de grado</label>
+						<select
+							id="gradeSystem"
+							name="gradeSystem"
+							bind:value={selectedGradeSystem}
+							on:change={onGradeSystemChange}
+							required
+							class="border px-2 py-1"
+							disabled={!gradeSystemList.length}
+						>
+							<option value="" disabled selected>Selecciona un Sistema de Grados</option>
+
+							{#each gradeSystemList as gradeSystem}
+								<option value={gradeSystem}>{gradeSystem}</option>
+							{/each}
+						</select>
+					</div>
+
+					<div>
+						<label for="value" class="mb-1 block">Valor</label>
+						<select
+							id="value"
+							name="value"
+							bind:value={selectedGradeSystemValue}
+							required
+							class="border px-2 py-1"
+						>
+							<option value="" disabled selected>Selecciona un Grado</option>
+
+							{#each gradeSystemsValueList as gradeSystemValue}
+								<option value={gradeSystemValue}>{gradeSystemValue}</option>
 							{/each}
 						</select>
 					</div>
