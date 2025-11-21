@@ -2,7 +2,6 @@ import { db } from '$lib/server/db';
 import { climb, sector } from '$lib/server/db/schema';
 import { requireUser, requireAdmin } from '$lib/server/auth/guards';
 import {
-	category as categoryMap,
 	isValidCategory,
 	isValidType,
 	Status
@@ -38,8 +37,6 @@ export const load: PageServerLoad = async (event) => {
 		sectorId,
 		areaId,
 		sectorInfo,
-		categoryGroups: Object.keys(categoryMap),
-		categoryOptions: categoryMap
 	};
 };
 export const actions: Actions = {
@@ -52,6 +49,9 @@ export const actions: Actions = {
 		const categoryGroup = String(data.get('category') ?? '').trim();
 		const climbType = String(data.get('climbType') ?? '').trim();
 		const requiredEquipment = String(data.get('requiredEquipment') ?? '').trim();
+		const gradeSystem = String(data.get('gradeSystem') ?? '').trim();
+		const value = String(data.get('value') ?? '').trim();
+
 
 		if (!name || !categoryGroup || !climbType || !requiredEquipment) {
 			return fail(400, {
@@ -73,6 +73,8 @@ export const actions: Actions = {
 			name,
 			category: categoryGroup,
 			climbType,
+			gradeSystem,
+			value,
 			requiredEquipment,
 			status: 'active',
 			createdAt: new Date(),
