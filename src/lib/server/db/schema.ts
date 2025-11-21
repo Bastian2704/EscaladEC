@@ -88,6 +88,8 @@ export const climb = pgTable('climb', {
 	name: text('name').notNull(),
 	category: text('category').notNull(),
 	climbType: text('climb_type').notNull().default('sport'),
+	gradeSystem: text('grade_system').notNull(),
+	value: text('value').notNull(),
 	requiredEquipment: text('required_equipment').notNull(),
 	status: text('status').notNull().default('active'),
 	createdBy: text('created_by').notNull().default('user'), //user default
