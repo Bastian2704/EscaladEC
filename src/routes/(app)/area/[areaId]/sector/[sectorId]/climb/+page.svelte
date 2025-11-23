@@ -66,8 +66,6 @@
 	let selectedGradeSystemValue = '';
 	let gradeSystemList: string[] = [];
 	let gradeSystemsValueList: string[] = [];
-	let accomplished = false;
-	let difficultyLevel: number;
 
 	function onCategoryChange() {
 		climbTypeList = climbTypes[selectedCategory as Category] ?? [];
