@@ -51,6 +51,15 @@
 			done: boolean;
 			createdAt: string;
 		}[];
+		recommendations: {
+			climbId: string;
+    		areaName: string | null;
+    		sectorName: string | null;
+    		climbName: string;
+    		gradeSystem: string;
+    		gradeValue: string;
+    		scaledValue: number | null;
+		}[];
 	};
 
 	export let form: { message?: string; success?: boolean } | undefined;
@@ -80,6 +89,29 @@
 					<h1 class="main-title">Perfil</h1>
 					<p class="main__profile-info">Nombre de usuario: {data.items[0].username}</p>
 					<p class="main__profile-info">Email registrado: {data.items[0].email}</p>
+					<table class="main__table">
+						<thead class="main__table-head">
+							<tr>
+								<th class="main__table-item">Area-Sector</th>
+								<th class="main__table-item">Climb</th>
+								<th class="main__table-item">Valor</th>
+							</tr>
+						</thead>
+						<tbody class="main__table-tbody">
+							{#each data.recommendations as recommendation}
+								<tr
+									class="main__table-body"
+									on:click={() => (window.location.href = `climb/${recommendation.climbId}/grade`)}
+								>
+									<td class="main__table-td">{`${recommendation.areaName}-${recommendation.sectorName}`}</td
+									>
+									<td class="main__table-td">{recommendation.climbName}</td>
+									<td class="main__table-td">{recommendation.gradeSystem}</td>
+									<td class="main__table-td">{recommendation.gradeValue}</td>
+								</tr>
+							{/each}
+						</tbody>
+					</table>
 					<p class="main__profile-info">
 						Nivel de Escalada Deportiva: {data.items[0].climbingLevelSport}
 					</p>
