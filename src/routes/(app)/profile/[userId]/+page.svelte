@@ -18,6 +18,39 @@
 		page: number;
 		role: string;
 		status: string;
+		userRopeClimbs: {
+			areaId: string;
+			areaName: string;
+			sectorName: string;
+			climbName: string;
+			realValue: string;
+			proposedValue: string;
+			difficulty: number;
+			done: boolean;
+			createdAt: string;
+		}[];
+		userTradClimbs: {
+			areaId: string;
+			areaName: string;
+			sectorName: string;
+			climbName: string;
+			realValue: string;
+			proposedValue: string;
+			difficulty: number;
+			done: boolean;
+			createdAt: string;
+		}[];
+		userNoRopeClimbs: {
+			areaId: string;
+			areaName: string;
+			sectorName: string;
+			climbName: string;
+			realValue: string;
+			proposedValue: string;
+			difficulty: number;
+			done: boolean;
+			createdAt: string;
+		}[];
 	};
 
 	export let form: { message?: string; success?: boolean } | undefined;
@@ -50,12 +83,98 @@
 					<p class="main__profile-info">
 						Nivel de Escalada Deportiva: {data.items[0].climbingLevelSport}
 					</p>
+					<table class="main__table">
+						<thead class="main__table-head">
+							<tr>
+								<th class="main__table-item">Area-Sector</th>
+								<th class="main__table-item">Climb</th>
+								<th class="main__table-item">Valor</th>
+								<th class="main__table-item">Valor Propuesto</th>
+								<th class="main__table-item">Dificultad</th>
+								<th class="main__table-item">Logrado</th>
+							</tr>
+						</thead>
+						<tbody class="main__table-tbody">
+							{#each data.userRopeClimbs as ropeClimbs}
+								<tr
+									class="main__table-body"
+									on:click={() => (window.location.href = `climb/${ropeClimbs.areaId}/grade`)}
+								>
+									<td class="main__table-td">{`${ropeClimbs.areaName}-${ropeClimbs.sectorName}`}</td
+									>
+									<td class="main__table-td">{ropeClimbs.climbName}</td>
+									<td class="main__table-td">{ropeClimbs.realValue}</td>
+									<td class="main__table-td">{ropeClimbs.proposedValue}</td>
+									<td class="main__table-td">{ropeClimbs.difficulty}</td>
+									<td class="main__table-td">{ropeClimbs.done ? '✅' : '❌'}</td>
+								</tr>
+							{/each}
+						</tbody>
+					</table>
+
 					<p class="main__profile-info">
 						Nivel de Escalada Sin Cuerda: {data.items[0].climbingLevelNoRope}
 					</p>
+					<table class="main__table">
+						<thead class="main__table-head">
+							<tr>
+								<th class="main__table-item">Area-Sector</th>
+								<th class="main__table-item">Climb</th>
+								<th class="main__table-item">Valor</th>
+								<th class="main__table-item">Valor Propuesto</th>
+								<th class="main__table-item">Dificultad</th>
+								<th class="main__table-item">Logrado</th>
+							</tr>
+						</thead>
+						<tbody class="main__table-tbody">
+							{#each data.userNoRopeClimbs as noRopeClimbs}
+								<tr
+									class="main__table-body"
+									on:click={() => (window.location.href = `climb/${noRopeClimbs.areaId}/grade`)}
+								>
+									<td class="main__table-td"
+										>{`${noRopeClimbs.areaName}-${noRopeClimbs.sectorName}`}</td
+									>
+									<td class="main__table-td">{noRopeClimbs.climbName}</td>
+									<td class="main__table-td">{noRopeClimbs.realValue}</td>
+									<td class="main__table-td">{noRopeClimbs.proposedValue}</td>
+									<td class="main__table-td">{noRopeClimbs.difficulty}</td>
+									<td class="main__table-td">{noRopeClimbs.done ? '✅' : '❌'}</td>
+								</tr>
+							{/each}
+						</tbody>
+					</table>
 					<p class="main__profile-info">
 						Nivel de Escalada Tradicional: {data.items[0].climbingLevelTrad}
 					</p>
+					<table class="main__table">
+						<thead class="main__table-head">
+							<tr>
+								<th class="main__table-item">Area-Sector</th>
+								<th class="main__table-item">Climb</th>
+								<th class="main__table-item">Valor</th>
+								<th class="main__table-item">Valor Propuesto</th>
+								<th class="main__table-item">Dificultad</th>
+								<th class="main__table-item">Logrado</th>
+							</tr>
+						</thead>
+						<tbody class="main__table-tbody">
+							{#each data.userTradClimbs as tradClimbs}
+								<tr
+									class="main__table-body"
+									on:click={() => (window.location.href = `climb/${tradClimbs.areaId}/grade`)}
+								>
+									<td class="main__table-td">{`${tradClimbs.areaName}-${tradClimbs.sectorName}`}</td
+									>
+									<td class="main__table-td">{tradClimbs.climbName}</td>
+									<td class="main__table-td">{tradClimbs.realValue}</td>
+									<td class="main__table-td">{tradClimbs.proposedValue}</td>
+									<td class="main__table-td">{tradClimbs.difficulty}</td>
+									<td class="main__table-td">{tradClimbs.done ? '✅' : '❌'}</td>
+								</tr>
+							{/each}
+						</tbody>
+					</table>
 				</section>
 			</section>
 			{#if form?.message}
