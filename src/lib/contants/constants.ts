@@ -51,12 +51,6 @@ export type Category =
 	| 'Escalada Sin Cuerda'
 	| 'Escalada Tradicional';
 
-export const carro1 = {
-	nombre: '',
-	placa: '',
-	numeroLlantas: 3
-};
-
 export const climbTypes = {
 	'Escalada Deportiva (Cuerda)': [
 		'Escala Deportiva',
