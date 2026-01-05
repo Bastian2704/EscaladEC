@@ -23,9 +23,12 @@ export const load: PageServerLoad = async (event) => {
 		pageSize: PAGE_SIZE,
 		status
 	});
+	const areaService = ServiceFactory.create('area');
+	const areaInfo = await areaService.getAreaHeader(areaId);
 
 	return {
 		items,
+		areaInfo,
 		page,
 		status,
 		areaId

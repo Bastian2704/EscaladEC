@@ -36,6 +36,11 @@ export class SectorService {
 	private assertAdmin(user: SessionUser) {
 		if (user.role !== 'admin') throw error(403, 'Forbidden');
 	}
+    async getSectorHeader(sectorId: string): Promise<SectorRow[]> {
+            const row = await this.repo.findById(sectorId);
+            if (!row) throw error(404, 'Sector no encontrado');
+            return [row]; 
+    }
 
 	async listSectors(params: ListSectorsParams): Promise<SectorRow[]> {
 		return this.repo.listByAreaId(params);

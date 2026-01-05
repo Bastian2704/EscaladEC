@@ -4,10 +4,6 @@ import { requireUser, requireAdmin } from '$lib/server/auth/guards';
 import { ServiceFactory } from '$lib/server/factories/serviceFactory';
 import { parseStatus } from '$lib/server/domain/parsers';
 
-import { db } from '$lib/server/db';
-import { sector } from '$lib/server/db/schema';
-import { eq } from 'drizzle-orm';
-
 const PAGE_SIZE = 10;
 
 export const load: PageServerLoad = async (event) => {
@@ -29,8 +25,8 @@ export const load: PageServerLoad = async (event) => {
 		status
 	});
 
-	// TEMPORAL: luego mover a SectorService
-	const sectorInfo = await db.select().from(sector).where(eq(sector.id, sectorId));
+	const sectorService = ServiceFactory.create('sector');
+	const sectorInfo = await sectorService.getSectorHeader(sectorId);
 
 	return {
 		items,

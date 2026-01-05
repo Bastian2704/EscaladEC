@@ -43,10 +43,13 @@ export class ClimbService {
 	private assertAdmin(user: SessionUser) {
 		if (user.role !== 'admin') throw error(403, 'Forbidden');
 	}
+	async getClimbHeader(climbId: string): Promise<ClimbRow[]> {
+				const row = await this.repo.findById(climbId);
+				if (!row) throw error(404, 'Climb no encontrado');
+				return [row]; 
+		}
 
 	async listClimbs(params: ListClimbsParams): Promise<ClimbRow[]> {
-		// Por ahora, el repo no filtra status (como en tu implementación original).
-		// Pero dejamos el param tipado para que el route no use any.
 		return this.repo.listBySectorId(params);
 	}
 

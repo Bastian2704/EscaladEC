@@ -1,9 +1,6 @@
 import type { Actions, PageServerLoad } from './$types';
 import { fail, redirect } from '@sveltejs/kit';
-import { eq } from 'drizzle-orm';
 import { requireUser, requireAdmin } from '$lib/server/auth/guards';
-import { db } from '$lib/server/db';
-import { climb } from '$lib/server/db/schema';
 import { ServiceFactory } from '$lib/server/factories/serviceFactory';
 import { parseStatus } from '$lib/server/domain/parsers';
 
@@ -29,8 +26,8 @@ export const load: PageServerLoad = async (event) => {
 		status
 	});
 
-	// esto lo puedes pasar luego a ClimbService/Repo, pero por ahora lo dejamos igual
-	const climbInfo = await db.select().from(climb).where(eq(climb.id, climbId));
+	const climbService = ServiceFactory.create('climb');
+	const climbInfo = await climbService.getClimbHeader(climbId);
 
 	return {
 		items,

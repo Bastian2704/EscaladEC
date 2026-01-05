@@ -41,6 +41,12 @@ export class AreaService {
 		if (user.role !== 'admin') throw error(403, 'Forbidden');
 	}
 
+    async getAreaHeader(areaId: string): Promise<AreaRow[]> {
+		const row = await this.repo.findById(areaId);
+		if (!row) throw error(404, 'Área no encontrada');
+		return [row]; 
+	}
+
 	async listAreas(params: ListAreasParams): Promise<AreaRow[]> {
 		return this.repo.list(params);
 	}
