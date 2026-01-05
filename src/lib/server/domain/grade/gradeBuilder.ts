@@ -1,10 +1,10 @@
-import type { NewGradeRow } from '$lib/server/repositories/grade.repository';
 import type { SessionUser, Status } from '$lib/server/domain/types';
-import { isValidGradeSystem, isValidGradeSystemValue, Status as StatusConst } from '$lib/contants/constants';
+import type { NewGradeRow } from '$lib/server/repositories/grade.repository';
+import { isValidGradeSystem, isValidGradeSystemValue } from '$lib/contants/constants';
 
 type CreateGradeInput = {
 	climbId: string;
-	climbCategory: string; // viene del form hidden
+	climbCategory: string;
 	gradeSystem: string;
 	value: string;
 	difficultyLevel: number;
@@ -46,25 +46,25 @@ export class GradeBuilder {
 
 	build(): NewGradeRow {
 		const now = new Date();
-
-		// Usamos tu enum Status del archivo constants para mantener consistencia con tu DB actual
-		// (si prefieres usar el union type, cambia StatusConst.active por 'active')
-		const status: Status = StatusConst.active as Status;
+		const status: Status = 'active';
 
 		return {
 			climbId: this.input.climbId,
 			userId: this.user.id,
+
 			gradeSystem: this.input.gradeSystem.trim(),
 			value: this.input.value.trim(),
 			difficultyLevel: this.input.difficultyLevel,
 			accomplished: this.input.accomplished,
+
+			likes: 0, 
 			status,
+			publishedBy: this.user.id,
+
 			createdAt: now,
 			updatedAt: now,
-			publishedBy: this.user.id,
-			updatedBy: this.user.id
-			// deletedAt -> null/undefined por default
-			// likes -> default 0 en DB
-		} as NewGradeRow;
+			updatedBy: this.user.id,
+			deletedAt: null
+		};
 	}
 }
