@@ -17,7 +17,10 @@ import { DrizzleUserRepository } from '$lib/server/repositories/drizzle/drizzleU
 import { UserService } from '$lib/server/services/user.service';
 import { LuciaSessionManager } from '$lib/server/services/luciaSessionManager';
 
-export type EntityServiceName = 'grade' | 'climb' | 'sector' | 'area' | 'user';
+import { DrizzleRecommendationsRepository } from '$lib/server/repositories/drizzle/drizzleRecommendationsRepository';
+import { RecommendationsService } from '$lib/server/services/recommendations.service';
+
+export type EntityServiceName = 'grade' | 'climb' | 'sector' | 'area' | 'user' | 'recommendations';
 
 export class ServiceFactory {
 	static create(name: 'grade'): GradeService;
@@ -25,6 +28,7 @@ export class ServiceFactory {
 	static create(name: 'sector'): SectorService;
 	static create(name: 'area'): AreaService;
 	static create(name: 'user'): UserService;
+	static create(name: 'recommendations'): RecommendationsService;
 	
 	static create(name: EntityServiceName) {
 		switch (name) {
@@ -44,6 +48,10 @@ export class ServiceFactory {
 				const repo = new DrizzleUserRepository(db);
 				const sessions = new LuciaSessionManager(lucia);
 				return new UserService(repo, sessions);
+			}
+			case 'recommendations': {
+				const repo = new DrizzleRecommendationsRepository(db);
+				return new RecommendationsService(repo);
 			}
 		}
 	}

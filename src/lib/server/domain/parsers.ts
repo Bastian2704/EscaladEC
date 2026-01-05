@@ -9,5 +9,7 @@ export function parseRole(value: unknown): Role {
 }
 
 export function parseStatus(value: unknown, fallback: Status = 'active'): Status {
-	return value === 'active' || value === 'suspended' || value === 'deleted' ? value : fallback;
+	const v = String(value ?? '').toLowerCase();
+	if (v === 'active' || v === 'suspended' || v === 'deleted') return v;
+	return fallback;
 }
