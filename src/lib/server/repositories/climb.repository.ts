@@ -1,7 +1,9 @@
 import type { Status } from '$lib/server/domain/types';
 import type { climb } from '$lib/server/db/schema';
 
-export type ClimbRow = typeof climb.$inferSelect;
+type ClimbSelect = typeof climb.$inferSelect;
+
+export type ClimbRow = Omit<ClimbSelect, 'status'> & { status: Status };
 export type NewClimbRow = typeof climb.$inferInsert;
 
 export type ListClimbsParams = {
@@ -11,16 +13,30 @@ export type ListClimbsParams = {
 	status?: Status | 'all';
 };
 
-export type StatusMeta = {
+export type ClimbUpdatePayload = {
+	name: string;
+	category: string;
+	climbType: string;
+	gradeSystem: string;
+	value: string;
+	requiredEquipment: string;
+	status: Status;
 	updatedAt: Date;
-	updatedBy?: string | null;
-	deletedAt?: Date | null;
+	updatedBy: string;
+};
+
+export type ClimbStatusPayload = {
+	status: Status;
+	updatedAt: Date;
+	updatedBy: string;
+	deletedAt: Date | null;
 };
 
 export interface IClimbRepository {
 	findById(id: string): Promise<ClimbRow | null>;
 	listBySectorId(params: ListClimbsParams): Promise<ClimbRow[]>;
 	insert(newClimb: NewClimbRow): Promise<ClimbRow>;
-	update(id: string, patch: Partial<NewClimbRow>): Promise<void>;
-	setStatus(id: string, status: Status, meta: StatusMeta): Promise<void>;
+
+	updateDetails(id: string, payload: ClimbUpdatePayload): Promise<void>;
+	updateStatus(id: string, payload: ClimbStatusPayload): Promise<void>;
 }
