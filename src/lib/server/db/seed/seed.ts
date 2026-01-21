@@ -1,8 +1,8 @@
 import { db } from "../index";
 import { area, sector, climb, users } from "../schema";
 import { eq } from "drizzle-orm";
-
 import { AREAS, SECTORS, CLIMBS } from "./data";
+import argon2 from "argon2";
 
 /**
  * Crea (o reutiliza) un usuario seed
@@ -10,6 +10,7 @@ import { AREAS, SECTORS, CLIMBS } from "./data";
  */
 async function getOrCreateSeedUser() {
   const email = "seed@escaladec.local";
+  const passwordHash = await argon2.hash("seed123");
 
   const existing = await db.query.users.findFirst({
     where: eq(users.email, email),
@@ -22,7 +23,7 @@ async function getOrCreateSeedUser() {
     .values({
       email,
       username: "seed",
-      passwordHash: "seed", // si luego quieres, lo cambiamos por bcrypt
+      passwordHash, 
       age: "25",
       role: "admin",
       status: "active",
