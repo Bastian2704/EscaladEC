@@ -1,7 +1,7 @@
 <script lang="ts">
 	export let form: any;
 	import logo from '$lib/assets/smallLogo.png';
-	import '$lib/styles/login.css'; 
+	import '$lib/styles/login.css';
 </script>
 
 <section class="login-background">

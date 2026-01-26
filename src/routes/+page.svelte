@@ -5,7 +5,9 @@
 
 <section class="landing-background">
 	<div class="landing-container">
-		<h1 class="landing-title">Bienvenido a EscaladEC</h1>
+		<h1 class="landing-title">Bienvenido a</h1>
+		<h1 class="landing-title">Urqu Ascents</h1>
+
 		<p class="landing-subtitle">Tu espacio para registrar, seguir y mejorar tus ascensos</p>
 
 		<div class="landing-buttons">

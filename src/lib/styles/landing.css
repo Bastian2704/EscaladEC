@@ -7,9 +7,11 @@
 	background: linear-gradient(135deg, #e0f2fe, #ffffff);
 	font-family: 'Inter', sans-serif;
 	text-align: center;
+	background-image: url('https://media.traveler.es/photos/668268a912d6baf3a4f49102/16:9/w_2560%2Cc_limit/E1WY19%2520(1).jpg');
+	background-size: cover;
+	background-position: center;
 }
 
-/* Contenedor principal */
 .landing-container {
 	max-width: 600px;
 	padding: 2rem;
