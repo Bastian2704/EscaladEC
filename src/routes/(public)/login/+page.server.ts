@@ -1,46 +1,14 @@
 import type { PageServerLoad, Actions } from './$types';
-import { lucia } from '$lib/server/auth/lucia';
-import { db } from '$lib/server/db';
-import { users } from '$lib/server/db/schema';
-import { verify } from 'argon2';
-import { redirect, fail } from '@sveltejs/kit';
-import { eq } from 'drizzle-orm';
+import { redirect } from '@sveltejs/kit';
+import { signIn } from '$lib/server/auth/keycloak';
 
 export const load: PageServerLoad = async ({ locals }) => {
 	if (locals.user) {
 		throw redirect(303, '/area');
 	}
-
 	return {};
 };
 
-export const actions: Actions = {
-	default: async ({ request, cookies, locals }) => {
-		if (locals.user) {
-			return fail(400, {
-				message: 'Ya tienes una sesión iniciada.'
-			});
-		}
-		const data = await request.formData();
-		const email = String(data.get('email') ?? '')
-			.toLowerCase()
-			.trim();
-		const password = String(data.get('password') ?? '');
-
-		if (!email || !password) return fail(400, { message: 'Datos inválidos' });
-
-		const u = await db.query.users.findFirst({ where: eq(users.email, email) });
-
-		if (!u || !(await verify(u.passwordHash, password))) {
-			return fail(400, { message: 'Credenciales inválidas' });
-		}
-		if (u.status !== 'active') {
-			return fail(403, { message: 'Tu cuenta está desactivada o suspendida' });
-		}
-
-		const session = await lucia.createSession(u.id, {});
-		const cookie = lucia.createSessionCookie(session.id);
-		cookies.set(cookie.name, cookie.value, { ...cookie.attributes, path: '/' });
-		throw redirect(303, '/area');
-	}
-};
+// signIn es directamente un action handler de @auth/sveltekit.
+// El provider viene del campo oculto "provider" en el formulario.
+export const actions: Actions = { default: signIn };

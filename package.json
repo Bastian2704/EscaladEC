@@ -61,11 +61,9 @@
 		"vitest-browser-svelte": "^0.1.0"
 	},
 	"dependencies": {
-		"@lucia-auth/adapter-drizzle": "^1.1.0",
-		"@node-rs/argon2": "^2.0.2",
-		"argon2": "^0.44.0",
+		"@auth/core": "^0.37.4",
+		"@auth/sveltekit": "^1.7.4",
 		"dotenv": "^17.2.3",
-		"lucia": "^3.2.2",
 		"pg": "^8.16.3",
 		"postgres": "^3.4.5"
 	},

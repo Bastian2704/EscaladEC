@@ -1,5 +1,4 @@
 import { db } from '$lib/server/db';
-import { lucia } from '$lib/server/auth/lucia';
 
 import { DrizzleGradeRepository } from '$lib/server/repositories/drizzle/drizzleGradeRepository';
 import { GradeService } from '$lib/server/services/grade.service';
@@ -15,7 +14,7 @@ import { AreaService } from '$lib/server/services/area.service';
 
 import { DrizzleUserRepository } from '$lib/server/repositories/drizzle/drizzleUserRepository';
 import { UserService } from '$lib/server/services/user.service';
-import { LuciaSessionManager } from '$lib/server/services/luciaSessionManager';
+import { KeycloakSessionManager } from '$lib/server/services/luciaSessionManager';
 
 import { DrizzleRecommendationsRepository } from '$lib/server/repositories/drizzle/drizzleRecommendationsRepository';
 import { RecommendationsService } from '$lib/server/services/recommendations.service';
@@ -46,7 +45,7 @@ export class ServiceFactory {
 			}
 			case 'user': {
 				const repo = new DrizzleUserRepository(db);
-				const sessions = new LuciaSessionManager(lucia);
+				const sessions = new KeycloakSessionManager();
 				return new UserService(repo, sessions);
 			}
 			case 'recommendations': {

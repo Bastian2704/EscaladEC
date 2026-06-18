@@ -1,5 +1,4 @@
 import type { NewUserRow, Role } from '$lib/server/repositories/user.repository';
-import { hash } from 'argon2';
 
 type CreateAdminUserInput = {
 	email: string;
@@ -32,7 +31,8 @@ export class AdminUserBuilder {
 		const now = new Date();
 		const email = this.input.email.toLowerCase().trim();
 
-		const passwordHash = await hash(this.input.password);
+		// Auth delegada a Keycloak: el campo passwordHash queda como marcador.
+		const passwordHash = 'keycloak-managed';
 
 		return {
 			email,

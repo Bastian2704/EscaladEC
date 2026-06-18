@@ -1,5 +1,6 @@
-// src/app.d.ts
 /// <reference types="@sveltejs/kit" />
+import type { DefaultSession } from '@auth/core/types';
+
 declare global {
 	namespace App {
 		interface Locals {
@@ -9,10 +10,22 @@ declare global {
 	}
 }
 
-// Augmentación de Lucia: atributos extra que expones en getUserAttributes
-declare module 'lucia' {
-	interface Register {
-		DatabaseUserAttributes: { email: string; role: 'user' | 'admin' };
+declare module '@auth/core/types' {
+	interface Session {
+		error?: string;
+		user: DefaultSession['user'] & {
+			roles?: string[];
+		};
+	}
+}
+
+declare module '@auth/core/jwt' {
+	interface JWT {
+		accessToken?: string;
+		refreshToken?: string;
+		expiresAt?: number;
+		roles?: string[];
+		error?: string;
 	}
 }
 

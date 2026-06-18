@@ -2,7 +2,7 @@ import { db } from "../index";
 import { users, grade } from "../schema";
 import { eq } from "drizzle-orm";
 import { gradeSystemsValues } from "$lib/contants/constants";
-import argon2 from "argon2";
+// argon2 eliminado: auth migrada a Keycloak. passwordHash no se usa para login.
 
 
 // ----------------------------
@@ -88,7 +88,7 @@ async function getOrCreateUsers(): Promise<string[]> {
       ids.push(existing.id);
       continue;
     }
-    const passwordHash = await argon2.hash("seed123");
+    const passwordHash = "keycloak-managed";
 
     const [created] = await db
       .insert(users)

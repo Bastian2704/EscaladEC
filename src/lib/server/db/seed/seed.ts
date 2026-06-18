@@ -2,7 +2,7 @@ import { db } from "../index";
 import { area, sector, climb, users } from "../schema";
 import { eq } from "drizzle-orm";
 import { AREAS, SECTORS, CLIMBS } from "./data";
-import argon2 from "argon2";
+// argon2 eliminado: auth migrada a Keycloak. passwordHash no se usa para login.
 
 /**
  * Crea (o reutiliza) un usuario seed
@@ -10,7 +10,7 @@ import argon2 from "argon2";
  */
 async function getOrCreateSeedUser() {
   const email = "seed@escaladec.local";
-  const passwordHash = await argon2.hash("seed123");
+  const passwordHash = "keycloak-managed";
 
   const existing = await db.query.users.findFirst({
     where: eq(users.email, email),
